@@ -1,4 +1,17 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+# Conquest
+
+  Joc idle in stilul AdVenture Capitalist, pe tema unui imperiu medieval. Pornesti cu o singura
+tara si iti extinzi imperiul cumparand si facand upgrade la tari de pe harta. 
+  Jocul ruleaza in timp real: banii curg pasiv. Obiectivul final este cucerirea intregii harti.
+Fiecare tara produce aur pasiv in functie de tipul ei (agrara, industriala, militara, tech)
+si de nivelul de upgrade. Cu cat ai mai multe tari, cu atat stabilitatea imperiului scade
+mai rapid; daca ajunge la 0, imperiul colapseaza si esti nevoit sa vinzi tari sau sa faci
+forfeit. 
+  Stabilitatea se poate creste tinand un discurs intr-una dintre tarile detinute.
+Pe parcurs apar Resource Chest-uri care dau bonusuri de aur daca raspunzi corect la o
+intrebare. Jucatorul poate angaja consilieri (advisori) contra cost, care ofera recomandari
+strategice, si poate activa abilitati temporare precum PeoplePleaser (incetineste pierderea
+stabilitatii) sau MilitaryPower (reduce costurile de cucerire).
 
 ### Folosiți template-ul corespunzător grupei voastre!
 
