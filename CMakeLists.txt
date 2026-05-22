@@ -69,6 +69,16 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Advisor.cpp
         include/Player.hpp
         src/Player.cpp
+        include/Agriculturalcountry.hpp
+        src/Agriculturalcountry.cpp
+        include/IndustrialCountry.hpp
+        src/IndustrialCountry.cpp
+        include/MilitaryCountry.hpp
+        src/MilitaryCountry.cpp
+        include/game.hpp
+        src/game.cpp
+        include/menu.hpp
+        src/menu.cpp
 )
 # NOTE: When we add new .cpp source files, list them here.
 # target_sources(${MAIN_EXECUTABLE_NAME}

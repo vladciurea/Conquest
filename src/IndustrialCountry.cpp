@@ -1,0 +1,78 @@
+#include "IndustrialCountry.hpp"
+
+IndustrialCountry::IndustrialCountry(std::string n,
+                                     const std::vector<Country*>& neigh,
+                                     Player* own,
+                                     int prodIndex,
+                                     int tier,
+                                     float pollution,
+                                     int factories)
+    : Country(std::move(n), neigh, own, prodIndex, tier),
+      pollutionRate(pollution), factoryLevel(factories) {}
+
+IndustrialCountry::IndustrialCountry(const IndustrialCountry& other)
+    : Country(other),
+      pollutionRate(other.pollutionRate),
+      factoryLevel(other.factoryLevel) {
+    std::cout << "[IndustrialCountry] Copy constructor pentru "
+              << getName() << '\n';
+}
+
+IndustrialCountry& IndustrialCountry::operator=(const IndustrialCountry& other) {
+    if (this != &other) {
+        Country::operator=(other);
+        pollutionRate = other.pollutionRate;
+        factoryLevel  = other.factoryLevel;
+    }
+    std::cout << "[IndustrialCountry] operator= pentru " << getName() << '\n';
+    return *this;
+}
+
+IndustrialCountry::~IndustrialCountry() {
+    std::cout << "[IndustrialCountry] Destructor pentru " << getName() << '\n';
+}
+
+IndustrialCountry* IndustrialCountry::clone() const {
+    return new IndustrialCountry(*this);
+}
+
+int IndustrialCountry::produceIncome(float stabilityFactor) const {
+    // Productia e amplificata de nivelul fabricilor
+    // dar penalizata de instabilitate (muncitorii fac greva)
+    float base = static_cast<float>(baseProduction() * factoryLevel);
+    return static_cast<int>(base * stabilityFactor);
+}
+
+int IndustrialCountry::costToBuy() const {
+    return 60 * getTier() + baseProduction() * 2;
+}
+
+std::string IndustrialCountry::getTypeName() const {
+    return "Industrial";
+}
+
+void IndustrialCountry::displayInfo(std::ostream& os) const {
+    os << "IndustrialCountry[" << getName() << "]"
+       << " tier=" << getTier()
+       << " factories=" << factoryLevel
+       << " pollution=" << pollutionRate
+       << " income(stab=1.0)=" << produceIncome(1.0f)
+       << " cost=" << costToBuy()
+       << " owner=" << (getOwner() ? "Player" : "None");
+}
+
+float IndustrialCountry::getPollutionRate() const {
+    return pollutionRate;
+}
+
+void IndustrialCountry::upgradeFactory() {
+    factoryLevel++;
+    pollutionRate += 0.1f;
+    std::cout << "[IndustrialCountry] " << getName()
+              << " a fost upgradată la factory level " << factoryLevel
+              << " (pollution=" << pollutionRate << ")\n";
+}
+
+int IndustrialCountry::getFactoryLevel() const {
+    return factoryLevel;
+}

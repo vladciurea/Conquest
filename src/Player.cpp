@@ -14,13 +14,16 @@ int   Player::getOwnedCount() const { return static_cast<int>(ownedCountries.siz
 int& Player::goldRef() { return goldAmount; }
 
 int Player::calculateTotalIncome() const {
+    // Calculam stabilityFactor o singura data si il pasam fiecarei tari.
+    // Fiecare derivata decide singura cum il foloseste (Agricultural il ignora,
+    // Industrial il aplica complet, Military partial).
+    float stabilityFactor = stability / 100.0f;
+    if (stabilityFactor < 0.0f) stabilityFactor = 0.0f;
+    if (stabilityFactor > 1.0f) stabilityFactor = 1.0f;
+
     int total = 0;
     for (const Country* c : ownedCountries) {
-        total += c->productionPerTurn();
-    }
-    if (stability < 50.0f) {
-        float factor = 1.0f - (50.0f - stability) / 200.0f;
-        total = static_cast<int>(static_cast<float>(total) * factor);
+        total += c->produceIncome(stabilityFactor);
     }
     return total;
 }

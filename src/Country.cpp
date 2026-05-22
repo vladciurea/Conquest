@@ -7,15 +7,15 @@ Country::Country(std::string n,
                  Player* own,
                  int prodIndex,
                  int tier)
-    : name(std::move(n)), neighbors(neigh), owner(own),
-      resourceProdIndex(prodIndex), resourceTier(tier) {}
+    : name(std::move(n)), neighbors(neigh),
+      resourceTier(tier), owner(own), resourceProdIndex(prodIndex) {}
 
 Country::Country(const Country& other)
     : name(other.name),
       neighbors(other.neighbors),
+      resourceTier(other.resourceTier),
       owner(other.owner),
-      resourceProdIndex(other.resourceProdIndex),
-      resourceTier(other.resourceTier) {
+      resourceProdIndex(other.resourceProdIndex) {
     std::cout << "[Country] Copy constructor pentru " << name << '\n';
 }
 
@@ -23,9 +23,9 @@ Country& Country::operator=(const Country& other) {
     if (this != &other) {
         name              = other.name;
         neighbors         = other.neighbors;
+        resourceTier      = other.resourceTier;
         owner             = other.owner;
         resourceProdIndex = other.resourceProdIndex;
-        resourceTier      = other.resourceTier;
     }
     std::cout << "[Country] operator= pentru " << name << '\n';
     return *this;
@@ -33,6 +33,12 @@ Country& Country::operator=(const Country& other) {
 
 Country::~Country() {
     std::cout << "[Country] Destructor pentru " << name << '\n';
+}
+
+// NVI: operator<< este non-virtual si apeleaza displayInfo() virtual
+std::ostream& operator<<(std::ostream& os, const Country& c) {
+    c.displayInfo(os);
+    return os;
 }
 
 const std::string& Country::getName()  const { return name; }
@@ -46,17 +52,7 @@ bool Country::isNeighbor(const Country* c) const {
                                [c](const Country* n){ return n == c; });
 }
 
-int Country::productionPerTurn() const {
+// Productia de baza comuna - derivatele o folosesc ca punct de plecare
+int Country::baseProduction() const {
     return resourceProdIndex * resourceTier * (10 + resourceTier);
-}
-
-int Country::costToBuy() const {
-    return 50 * resourceTier + productionPerTurn() * 2;
-}
-
-std::ostream& operator<<(std::ostream& os, const Country& c) {
-    os << "Country[" << c.name << "] tier=" << c.resourceTier
-       << " prodIndex=" << c.resourceProdIndex
-       << " owner=" << (c.owner ? "Player" : "None");
-    return os;
 }

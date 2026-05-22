@@ -5,11 +5,11 @@
 #include <vector>
 
 class ResourceChest {
-    std::string              question;
+    std::string question;
     std::vector<std::string> options;
-    int                      correctIndex = 0;
-    int                      rewardGold   = 100;
-    int                      lifeTimeTurns = 5;
+    int correctIndex = 0;
+    int rewardGold = 100;
+    int lifeTimeTurns = 5;
 
 public:
     ResourceChest(std::string q,
