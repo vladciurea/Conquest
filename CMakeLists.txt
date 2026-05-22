@@ -32,14 +32,14 @@ set(SFML_WARNINGS_AS_ERRORS OFF)
 #     - .github/actions/configure-cmake/action.yml
 #     - .github/workflows/cmake.yml
 FetchContent_Declare(
-    SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    # renovate: datasource=github-tags depName=SFML/SFML versioning=loose
-    GIT_TAG        3.0.2
-    # renovate: depName=SFML/SFML
-    # GIT_TAG        0fa201c969e48ecc253581c5841ce73f44d42f49 # 3.0.2
-    GIT_SHALLOW    1  # works only with branches or tags, not with arbitrary commit hashes
-    GIT_PROGRESS   ON
+        SFML
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        # renovate: datasource=github-tags depName=SFML/SFML versioning=loose
+        GIT_TAG        3.0.2
+        # renovate: depName=SFML/SFML
+        # GIT_TAG        0fa201c969e48ecc253581c5841ce73f44d42f49 # 3.0.2
+        GIT_SHALLOW    1  # works only with branches or tags, not with arbitrary commit hashes
+        GIT_PROGRESS   ON
 )
 
 FetchContent_MakeAvailable(SFML)
@@ -58,12 +58,23 @@ endif()
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
-    main.cpp
+        main.cpp
+        include/Country.hpp
+        src/Country.cpp
+        include/Ability.hpp
+        src/Ability.cpp
+        include/Resourcechest.hpp
+        src/Resourcechest.cpp
+        include/Advisor.hpp
+        src/Advisor.cpp
+        include/Player.hpp
+        src/Player.cpp
 )
-target_sources(${MAIN_EXECUTABLE_NAME}
-    PRIVATE
-        src/Example.cpp
-)
+# NOTE: When we add new .cpp source files, list them here.
+# target_sources(${MAIN_EXECUTABLE_NAME}
+#     PRIVATE
+#         src/SomeClass.cpp
+# )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
 # NOTE: RUN_SANITIZERS is optional, if it's not present it will default to true
@@ -76,13 +87,13 @@ set_compiler_flags(RUN_SANITIZERS ${USE_ASAN} TARGET_NAMES ${MAIN_EXECUTABLE_NAM
 
 # use SYSTEM so cppcheck and clang-tidy do not report warnings from these directories
 target_include_directories(${MAIN_EXECUTABLE_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 )
 target_include_directories(${MAIN_EXECUTABLE_NAME} SYSTEM PRIVATE
-    ext
+        ext
 )
 target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE
-    SFML::Graphics SFML::Window SFML::System Threads::Threads
+        SFML::Graphics SFML::Window SFML::System Threads::Threads
 )
 
 if(APPLE)
@@ -99,6 +110,6 @@ if(APPLE)
     install(FILES launcher.command DESTINATION ${DESTINATION_DIR})
 endif()
 
-copy_files(FILES tastatura.txt DIRECTORY assets COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
-# copy_files(FILES tastatura.txt config.json DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
-# copy_files(DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+# Copy runtime assets (input file + font) next to the executable so the game
+# can find them at runtime regardless of working directory.
+copy_files(FILES tastatura.txt assets/DejaVuSans.ttf DIRECTORY assets COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
