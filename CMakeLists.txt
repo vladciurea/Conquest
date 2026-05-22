@@ -69,8 +69,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Advisor.cpp
         include/Player.hpp
         src/Player.cpp
-        include/Agriculturalcountry.hpp
-        src/Agriculturalcountry.cpp
+        include/AgriculturalCountry.hpp
+        src/AgriculturalCountry.cpp
         include/IndustrialCountry.hpp
         src/IndustrialCountry.cpp
         include/MilitaryCountry.hpp
