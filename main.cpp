@@ -2,7 +2,7 @@
 #include "Ability.hpp"
 #include "Country.hpp"
 #include "Player.hpp"
-#include "ResourceChest.hpp"
+#include "Resourcechest.hpp"
 
 #include <iostream>
 #include <limits>
