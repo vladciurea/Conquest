@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Menu.hpp"
+#include "menu.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>
