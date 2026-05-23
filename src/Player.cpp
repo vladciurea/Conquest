@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include "Country.hpp"
+#include "GameExceptions.hpp"
 
 Player::Player(const std::vector<Country*>& owned,
                int gold,
@@ -35,16 +36,12 @@ void Player::collectIncome() {
 }
 
 bool Player::buyCountry(Country& target) {
-    if (target.getOwner() == this) {
-        std::cout << "Deja detii " << target.getName() << "\n";
-        return false;
-    }
+    if (target.getOwner() == this)
+        throw CountryException(target.getName(), "tara este deja detinuta de acest jucator");
+
     int cost = target.costToBuy();
-    if (goldAmount < cost) {
-        std::cout << "Nu ai suficiente resurse pentru a cumpara " << target.getName()
-                  << " (cost=" << cost << ", ai=" << goldAmount << ")\n";
-        return false;
-    }
+    if (goldAmount < cost)
+        throw ResourceException("cumparare " + target.getName(), goldAmount, cost);
     if (target.getOwner() != nullptr && target.getOwner() != this) {
         cost = static_cast<int>(static_cast<float>(cost) * 1.5f);
         std::cout << "Tara are proprietar, pretul negociat este " << cost << "\n";
@@ -69,38 +66,7 @@ bool Player::buyCountry(Country& target) {
     return true;
 }
 
-bool Player::conquer(Country& target) {
-    if (target.getOwner() == this) {
-        std::cout << "Tara este deja a ta.\n";
-        return false;
-    }
-    bool can = false;
-    for (const Country* myc : ownedCountries) {
-        if (myc->isNeighbor(&target)) {
-            can = true;
-            break;
-        }
-    }
-    if (!can && !ownedCountries.empty()) {
-        std::cout << "Poti cuceri doar tari vecine uneia dintre tarile tale.\n";
-        return false;
-    }
-    int cost = static_cast<int>(static_cast<float>(target.costToBuy()) * 1.2f);
-    if (goldAmount < cost) {
-        std::cout << "Nu ai destule resurse pentru cucerire (cost=" << cost
-                  << ", ai=" << goldAmount << ")\n";
-        return false;
-    }
-    goldAmount -= cost;
-    target.setOwner(this);
-    ownedCountries.push_back(&target);
-    float dec = 2.0f * static_cast<float>(target.getTier());
-    stability -= dec;
-    if (stability < 0.0f) stability = 0.0f;
-    std::cout << "Ai cucerit " << target.getName() << " pentru " << cost
-              << " aur. Stabilitate -" << dec << "\n";
-    return true;
-}
+
 
 void Player::giveSpeech(int choice) {
     std::cout << "Tii un discurs (alegere: " << choice << ")\n";

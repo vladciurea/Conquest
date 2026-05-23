@@ -3,7 +3,6 @@
 #include <iostream>
 #include <stdexcept>
 
-
 const std::string Game::WINDOW_TITLE = "Conquest";
 const std::string Game::FONT_PATH    = "DejaVuSans.ttf";
 
@@ -15,8 +14,7 @@ Game::Game()
     window.setVerticalSyncEnabled(true);
     loadFont();
     menu = std::make_unique<Menu>(font, window.getSize());
-    std::cout << "[Game] Initializat. Fereastra: "
-              << WINDOW_WIDTH << "x" << WINDOW_HEIGHT << "\n";
+    std::cout << "[Game] Initializat.\n";
 }
 
 void Game::loadFont() {
@@ -39,41 +37,62 @@ void Game::run() {
     std::cout << "[Game] Game loop oprit.\n";
 }
 
+void Game::startGame() {
+    std::cout << "[Game] Pornire joc.\n";
+    // Cream GameScreen doar la primul start sau dupa reset
+    if (!gameScreen) {
+        gameScreen = std::make_unique<GameScreen>(font);
+    } else {
+        gameScreen->reset();
+    }
+    state = GameState::Playing;
+}
+
+void Game::backToMenu() {
+    std::cout << "[Game] Inapoi la meniu.\n";
+    state = GameState::Menu;
+    // Nu distrugem gameScreen - il pastram pentru a putea relua
+}
+
 void Game::processEvents() {
     while (const std::optional event = window.pollEvent()) {
-        // Inchidere prin X sau Escape - merge indiferent de stare
         if (event->is<sf::Event::Closed>()) {
             state = GameState::Quit;
             return;
         }
         if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
             if (key->scancode == sf::Keyboard::Scancode::Escape) {
-                state = GameState::Quit;
+                if (state == GameState::Playing) backToMenu();
+                else state = GameState::Quit;
                 return;
             }
         }
 
-        // Delegam evenimentul catre starea curenta
         if (state == GameState::Menu && menu) {
             const MenuAction action = menu->handleEvent(*event, window);
             if (action == MenuAction::Quit) {
-                std::cout << "[Game] Quit apasat din meniu.\n";
                 state = GameState::Quit;
             } else if (action == MenuAction::StartGame) {
-                std::cout << "[Game] Start Game apasat (deocamdata nefunctional).\n";
-                // state = GameState::Playing; -- de activat la v0.2
+                startGame();
             }
+        } else if (state == GameState::Playing && gameScreen) {
+            const GameScreenResult result =
+                gameScreen->handleEvent(*event, window);
+            if (result == GameScreenResult::BackToMenu) backToMenu();
+            else if (result == GameScreenResult::GameOver)  backToMenu();
+            else if (result == GameScreenResult::Victory)   backToMenu();
         }
     }
 }
 
 
-void Game::update(float /*dt*/) {
+void Game::update(float dt) {
     if (state == GameState::Menu && menu) {
-        // Pasam pozitia mouse-ului pentru hover pe butoane
         const sf::Vector2f mousePos = window.mapPixelToCoords(
             sf::Mouse::getPosition(window));
         menu->update(mousePos);
+    } else if (state == GameState::Playing && gameScreen) {
+        gameScreen->update(dt);
     }
 }
 
@@ -83,8 +102,9 @@ void Game::render() {
 
     if (state == GameState::Menu && menu) {
         menu->draw(window);
+    } else if (state == GameState::Playing && gameScreen) {
+        gameScreen->render(window);
     }
-    // Aici vom adauga randarea jocului cand GameState::Playing e implementat
 
     window.display();
 }

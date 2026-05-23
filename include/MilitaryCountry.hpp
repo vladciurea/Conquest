@@ -2,14 +2,14 @@
 
 #include "Country.hpp"
 
-// Tara militara: venit mediu, dar ofera avantaje strategice.
-// Reduce costul de cucerire al tarilor vecine si face tara
-// mai scumpa de cucerit de adversari (defense bonus).
-// Caracteristica speciala: defenseBonus si conquestDiscount.
+// Tara militara: venit mediu, dar face tara mai scumpa de cumparat
+// (defenseBonus) si ofera un bonus de stabilitate imperiului
+// (prezenta militara tine ordinea).
+// Caracteristica speciala: defenseBonus si garrisonSize.
 class MilitaryCountry : public Country {
-    float defenseBonus;     // multiplica costul de cucerire al acestei tari (+scump pt adversar)
-    float conquestDiscount; // reduce costul de cucerire al vecinilor (0.0 = fara discount)
-    int garrisonSize;     // marimea garnizoanei, amplifica defenseBonus
+    float defenseBonus;  // multiplica costul de cumparare al acestei tari
+    int   garrisonSize;  // marimea garnizoanei, amplifica defenseBonus
+    // si ofera bonus de stabilitate pasiv
 
 public:
     MilitaryCountry(std::string n,
@@ -17,9 +17,8 @@ public:
                     Player* own,
                     int prodIndex,
                     int tier,
-                    float defense   = 1.2f,
-                    float discount  = 0.1f,
-                    int garrison    = 1);
+                    float defense = 1.2f,
+                    int garrison  = 1);
 
     MilitaryCountry(const MilitaryCountry& other);
     MilitaryCountry& operator=(const MilitaryCountry& other);
@@ -30,21 +29,20 @@ public:
     // Specific temei: venitul e moderat, afectat partial de stabilitate
     [[nodiscard]] int produceIncome(float stabilityFactor) const override;
 
-    // Cea mai scumpa categorie de tari
+    // Cea mai scumpa categorie - defenseBonus o face si mai scumpa
     [[nodiscard]] int costToBuy() const override;
 
-    // Specific temei: returneaza costul efectiv de cucerire al unui vecin
-    // (aplicand conquestDiscount daca playerul detine aceasta tara)
-    [[nodiscard]] int conquerCost(const Country& target) const;
+    // Specific temei: bonus de stabilitate pasiv oferit imperiului
+    // (returneaza cat creste stabilitatea pe tick cat timp e detinuta)
+    [[nodiscard]] float stabilityBonus() const;
 
     [[nodiscard]] std::string getTypeName() const override;
 
     void displayInfo(std::ostream& os) const override;
 
     [[nodiscard]] float getDefenseBonus() const;
-    [[nodiscard]] float getConquestDiscount() const;
+    [[nodiscard]] int   getGarrisonSize() const;
 
-    // Mareste garnizaona - creste defenseBonus
+    // Mareste garnizaona - creste defenseBonus si stabilityBonus
     void reinforceGarrison();
-    [[nodiscard]] int getGarrisonSize() const;
 };

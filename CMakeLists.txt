@@ -65,8 +65,6 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Ability.cpp
         include/Resourcechest.hpp
         src/Resourcechest.cpp
-        include/Advisor.hpp
-        src/Advisor.cpp
         include/Player.hpp
         src/Player.cpp
         include/AgriculturalCountry.hpp
@@ -79,6 +77,13 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/game.cpp
         include/menu.hpp
         src/menu.cpp
+        include/Gameexceptions.hpp
+        include/Gamescreen.hpp
+        src/Gamescreen.cpp
+        include/Stabilitybar.hpp
+        src/Stabilitybar.cpp
+        include/Countrycard.hpp
+        src/Countrycard.cpp
 )
 # NOTE: When we add new .cpp source files, list them here.
 # target_sources(${MAIN_EXECUTABLE_NAME}
@@ -122,4 +127,16 @@ endif()
 
 # Copy runtime assets (input file + font) next to the executable so the game
 # can find them at runtime regardless of working directory.
-copy_files(FILES tastatura.txt assets/DejaVuSans.ttf DIRECTORY assets COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+copy_files(FILES
+        tastatura.txt
+        assets/DejaVuSans.ttf
+        assets/ro.png
+        assets/bg.png
+        assets/hu.png
+        assets/gr.png
+        assets/de.png
+        assets/fr.png
+        DIRECTORY assets
+        COPY_TO_DESTINATION
+        TARGET_NAME ${MAIN_EXECUTABLE_NAME}
+)

@@ -39,9 +39,11 @@ int AgriculturalCountry::produceIncome(float /*stabilityFactor*/) const {
 }
 
 int AgriculturalCountry::costToBuy() const {
-    // Tarile agricole sunt mai ieftine: baza * 1.5 (fata de 2.0 la altele)
-    return 40 * getTier() + static_cast<int>(
-        static_cast<float>(baseProduction()) * 1.5f);
+    static constexpr int costs[] = {500, 3000, 120000, 800000, 4000000};
+    int idx = getTier() - 1;
+    if (idx < 0) idx = 0;
+    if (idx > 4) idx = 4;
+    return costs[idx];
 }
 
 std::string AgriculturalCountry::getTypeName() const {

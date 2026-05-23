@@ -44,7 +44,11 @@ int IndustrialCountry::produceIncome(float stabilityFactor) const {
 }
 
 int IndustrialCountry::costToBuy() const {
-    return 60 * getTier() + baseProduction() * 2;
+    static constexpr int costs[] = {3000, 20000, 120000, 800000, 4000000};
+    int idx = getTier() - 1;
+    if (idx < 0) idx = 0;
+    if (idx > 4) idx = 4;
+    return costs[idx];
 }
 
 std::string IndustrialCountry::getTypeName() const {

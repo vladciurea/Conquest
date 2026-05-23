@@ -5,8 +5,7 @@
 #include <iostream>
 #include <vector>
 
-// Forward declaration: Player foloseste Country* dar nu are nevoie
-// de definitia completa in header.
+
 class Country;
 
 class Player {
@@ -32,7 +31,6 @@ public:
     void collectIncome();
 
     bool buyCountry(Country& target);
-    bool conquer(Country& target);
     void giveSpeech(int choice);
     bool useAbility(size_t idx);
     void listAbilities() const;
