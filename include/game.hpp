@@ -1,7 +1,7 @@
 #pragma once
 
 #include "menu.hpp"
-#include "GameScreen.hpp"
+#include "Gamescreen.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>

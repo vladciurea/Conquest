@@ -1,4 +1,4 @@
-#include "StabilityBar.hpp"
+#include "Stabilitybar.hpp"
 
 StabilityBar::StabilityBar(const sf::Font& font, sf::Vector2f position, float w, float h)
     : label(font), width(w), height(h) {

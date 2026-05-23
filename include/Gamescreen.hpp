@@ -5,10 +5,10 @@
 #include "MilitaryCountry.hpp"
 #include "Player.hpp"
 #include "Ability.hpp"
-#include "ResourceChest.hpp"
-#include "GameExceptions.hpp"
-#include "StabilityBar.hpp"
-#include "CountryCard.hpp"
+#include "Resourcechest.hpp"
+#include "Gameexceptions.hpp"
+#include "Stabilitybar.hpp"
+#include "Countrycard.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>

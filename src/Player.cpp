@@ -1,6 +1,6 @@
 #include "Player.hpp"
 #include "Country.hpp"
-#include "GameExceptions.hpp"
+#include "Gameexceptions.hpp"
 
 Player::Player(const std::vector<Country*>& owned,
                int gold,
