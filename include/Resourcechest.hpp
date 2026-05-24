@@ -1,26 +1,36 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <vector>
+#include <iostream>
 
 class ResourceChest {
     std::string question;
     std::vector<std::string> options;
     int correctIndex = 0;
-    int rewardGold = 100;
-    int lifeTimeTurns = 5;
 
 public:
-    ResourceChest(std::string q,
-                  const std::vector<std::string>& opts,
-                  int correct,
-                  int reward,
-                  int life);
+    ResourceChest(std::string q, const std::vector<std::string>& opts, int correct);
 
-    // Afiseaza intrebarea, citeste raspunsul si returneaza recompensa
-    // (0 daca raspunsul e gresit, rewardGold daca e corect).
-    int presentAndResolve() const;
+    ResourceChest(const ResourceChest& other);
+    ResourceChest& operator=(const ResourceChest& other);
+    virtual ~ResourceChest();
+
+    [[nodiscard]] virtual ResourceChest* clone() const = 0;
+
+    virtual void applyReward(float& gold, float& stability) const = 0;
+
+    [[nodiscard]] virtual std::string getTypeName() const = 0;
+    [[nodiscard]] virtual std::string getRewardDescription() const = 0;
+
+    [[nodiscard]] bool checkAnswer(int answerIndex) const;
+
+    [[nodiscard]] const std::string& getQuestion() const;
+    [[nodiscard]] const std::vector<std::string>& getOptions() const;
+    [[nodiscard]] int getCorrectIndex() const;
 
     friend std::ostream& operator<<(std::ostream& os, const ResourceChest& rc);
+
+protected:
+    virtual void displayInfo(std::ostream& os) const = 0;
 };

@@ -84,6 +84,12 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Stabilitybar.cpp
         include/Countrycard.hpp
         src/Countrycard.cpp
+        include/Goldchest.hpp
+        src/Goldchest.cpp
+        include/Stabilitychest.hpp
+        src/Stabilitychest.cpp
+        include/Sidepanel.hpp
+        src/Sidepanel.cpp
 )
 # NOTE: When we add new .cpp source files, list them here.
 # target_sources(${MAIN_EXECUTABLE_NAME}
@@ -136,6 +142,8 @@ copy_files(FILES
         assets/gr.png
         assets/de.png
         assets/fr.png
+        assets/goldchest.jpg
+        assets/stabilitychest.jpg
         DIRECTORY assets
         COPY_TO_DESTINATION
         TARGET_NAME ${MAIN_EXECUTABLE_NAME}

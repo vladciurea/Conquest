@@ -1,40 +1,31 @@
 #include "Resourcechest.hpp"
 
-#include <limits>
+ResourceChest::ResourceChest(std::string q, const std::vector<std::string>& opts, int correct)
+    : question(std::move(q)), options(opts), correctIndex(correct) {}
 
-ResourceChest::ResourceChest(std::string q,
-                             const std::vector<std::string>& opts,
-                             int correct,
-                             int reward,
-                             int life)
-    : question(std::move(q)), options(opts), correctIndex(correct),
-      rewardGold(reward), lifeTimeTurns(life) {}
+ResourceChest::ResourceChest(const ResourceChest& other)
+    : question(other.question), options(other.options), correctIndex(other.correctIndex) {}
 
-int ResourceChest::presentAndResolve() const {
-    std::cout << "---- Resource Chest ----\n";
-    std::cout << question << "\n";
-    for (size_t i = 0; i < options.size(); ++i) {
-        std::cout << "  " << (i + 1) << ") " << options[i] << "\n";
+ResourceChest& ResourceChest::operator=(const ResourceChest& other) {
+    if (this != &other) {
+        question = other.question;
+        options = other.options;
+        correctIndex = other.correctIndex;
     }
-    std::cout << "Alege optiunea (numar): ";
-
-    int choice = 0;
-    if (!(std::cin >> choice)) {
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Input invalid. Nu primesti aur.\n";
-        return 0;
-    }
-    if (choice - 1 == correctIndex) {
-        std::cout << "Raspuns corect! Primesti " << rewardGold << " aur.\n";
-        return rewardGold;
-    }
-    std::cout << "Raspuns gresit. Nicio recompensa.\n";
-    return 0;
+    return *this;
 }
 
+ResourceChest::~ResourceChest() = default;
+
+bool ResourceChest::checkAnswer(int answerIndex) const {
+    return answerIndex == correctIndex;
+}
+
+const std::string& ResourceChest::getQuestion() const { return question; }
+const std::vector<std::string>& ResourceChest::getOptions() const { return options; }
+int ResourceChest::getCorrectIndex() const { return correctIndex; }
+
 std::ostream& operator<<(std::ostream& os, const ResourceChest& rc) {
-    os << "ResourceChest[q=\"" << rc.question << "\" reward=" << rc.rewardGold
-       << " life=" << rc.lifeTimeTurns << "]";
+    rc.displayInfo(os);
     return os;
 }

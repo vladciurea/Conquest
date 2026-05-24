@@ -25,11 +25,11 @@ void StabilityBar::update(float stability) {
     fill.setSize({width * ratio, height});
 
     if (stability > 60.f)
-        fill.setFillColor(sf::Color(60, 180, 60));
+        fill.setFillColor(sf::Color(50, 120, 220));
     else if (stability > 30.f)
-        fill.setFillColor(sf::Color(200, 180, 0));
+        fill.setFillColor(sf::Color(80, 80, 200));
     else
-        fill.setFillColor(sf::Color(200, 50, 50));
+        fill.setFillColor(sf::Color(160, 30, 180));
 
     label.setString("Stabilitate: " + std::to_string(static_cast<int>(stability)) + "%");
 }

@@ -5,10 +5,12 @@
 #include "MilitaryCountry.hpp"
 #include "Player.hpp"
 #include "Ability.hpp"
-#include "Resourcechest.hpp"
+#include "Goldchest.hpp"
+#include "Stabilitychest.hpp"
 #include "Gameexceptions.hpp"
 #include "Stabilitybar.hpp"
 #include "Countrycard.hpp"
+#include "Sidepanel.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>
@@ -38,6 +40,7 @@ class GameScreen {
 
     std::unique_ptr<Country> romaniaSnapshot;
     std::unordered_map<std::string, sf::Texture> flagTextures;
+    SidePanel sidePanel;
 
     void initCountries();
     void initPlayer();

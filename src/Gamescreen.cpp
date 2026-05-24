@@ -1,4 +1,4 @@
-#include "Gamescreen.hpp"
+#include "GameScreen.hpp"
 
 #include <algorithm>
 #include <iomanip>
@@ -65,13 +65,19 @@ GameScreen::GameScreen(const sf::Font& font)
     : player({}, 200, 100.f, {}),
       font(font),
       goldText(font),
-      stabilityBar(font, {20.f, 50.f}, 250.f, 24.f) {
+      stabilityBar(font, {15.f, 50.f}, 250.f, 24.f),
+      sidePanel(font) {
     goldText.setCharacterSize(28);
     goldText.setFillColor(sf::Color(220, 190, 80));
     goldText.setPosition({640.f, 16.f});
     initPlayer();
     initCountries();
     initCards();
+    std::vector<Ability> abil = {
+        Ability("PeoplePleaser", "Incetineste scaderea stabilitatii", 80, +8, true),
+        Ability("MilitaryPower", "Productie x1.5", 120, +0, true)
+    };
+    sidePanel.setAbilities(abil);
 }
 
 GameScreen::GameScreen(const GameScreen& other)
@@ -81,7 +87,8 @@ GameScreen::GameScreen(const GameScreen& other)
       unlockedUpTo(other.unlockedUpTo),
       font(other.font),
       goldText(other.goldText),
-      stabilityBar(other.stabilityBar) {
+      stabilityBar(other.stabilityBar),
+      sidePanel(other.font) {
     for (const auto& c : other.countries)
         countries.push_back(std::unique_ptr<Country>(c->clone()));
     if (other.romaniaSnapshot)
@@ -137,6 +144,10 @@ GameScreenResult GameScreen::handleEvent(const sf::Event& event, sf::RenderWindo
         if (click->button == sf::Mouse::Button::Left) {
             sf::Vector2f mousePos = window.mapPixelToCoords(
                 {click->position.x, click->position.y});
+
+            SidePanelAction action = sidePanel.handleClick(mousePos, gold, stability);
+            if (action != SidePanelAction::None) return GameScreenResult::Continue;
+
             for (int i = 0; i < static_cast<int>(cards.size()); i++) {
                 try {
                     if (cards[i].isOwned()) {
@@ -191,6 +202,7 @@ void GameScreen::updateStability(float dt) {
         }
     }
 
+    sidePanel.update(dt);
     stability -= (decayRate - bonusRate) * dt;
     if (stability > 100.f) stability = 100.f;
     stabilityBar.update(stability);
@@ -219,8 +231,10 @@ void GameScreen::update(float dt) {
 }
 
 void GameScreen::render(sf::RenderWindow& window) {
+    sidePanel.draw(window);
     stabilityBar.draw(window);
     window.draw(goldText);
     for (const auto& card : cards)
         card.draw(window);
+    sidePanel.drawPopup(window);
 }
