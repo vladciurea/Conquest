@@ -1,8 +1,6 @@
 #include "menu.hpp"
 
-// ---------------------------------------------------------------
-// Button
-// ---------------------------------------------------------------
+
 Button::Button(const sf::Font& font,
                const std::string& text,
                sf::Vector2f position,

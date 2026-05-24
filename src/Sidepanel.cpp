@@ -1,4 +1,4 @@
-#include "SidePanel.hpp"
+#include "Sidepanel.hpp"
 
 static constexpr float ICON_SIZE = 80.f;
 static constexpr float SLOT_W   = 250.f;

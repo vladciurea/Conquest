@@ -1,4 +1,4 @@
-#include "StabilityChest.hpp"
+#include "Stabilitychest.hpp"
 
 StabilityChest::StabilityChest(std::string q, const std::vector<std::string>& opts, int correct, float reward)
     : ResourceChest(std::move(q), opts, correct), stabilityReward(reward) {}

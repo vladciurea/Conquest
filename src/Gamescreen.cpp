@@ -1,4 +1,4 @@
-#include "GameScreen.hpp"
+#include "Gamescreen.hpp"
 
 #include <algorithm>
 #include <iomanip>
