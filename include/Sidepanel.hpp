@@ -16,7 +16,8 @@ enum class SidePanelAction {
 };
 
 class ChestSlot {
-    std::unique_ptr<ResourceChest> chest;
+    std::vector<std::unique_ptr<ResourceChest>> variants;
+    int currentVariant = 0;
     sf::Texture texture;
     sf::RectangleShape icon;
     sf::Text nameText;
@@ -29,7 +30,7 @@ class ChestSlot {
     static constexpr float COOLDOWN = 30.f;
 
 public:
-    ChestSlot(const sf::Font& font, ResourceChest* c,
+    ChestSlot(const sf::Font& font, std::vector<std::unique_ptr<ResourceChest>> chestVariants,
               const std::string& imagePath, sf::Vector2f pos);
 
     ChestSlot(const ChestSlot&) = delete;
@@ -47,6 +48,7 @@ public:
     [[nodiscard]] bool checkAnswer(int idx) const;
     void applyReward(float& gold, float& stability) const;
     [[nodiscard]] const ResourceChest& getChest() const;
+    void pickRandomVariant();
 };
 
 class ChestPopup {
@@ -95,6 +97,7 @@ class SidePanel {
     std::vector<Ability> abilities;
     std::vector<sf::RectangleShape> abilityButtons;
     std::vector<sf::Text> abilityTexts;
+    std::vector<bool> abilityOwned;
 
     void rebuildAbilityButtons();
 

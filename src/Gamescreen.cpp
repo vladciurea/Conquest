@@ -178,7 +178,7 @@ void GameScreen::updateGold(float dt) {
             incomePerSec += base * cards[i].getProductionMultiplier();
         }
     }
-    gold += incomePerSec * dt;
+    gold += incomePerSec * 1.5f * dt;
 
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(1) << gold << " aur";
@@ -188,7 +188,7 @@ void GameScreen::updateGold(float dt) {
 }
 
 void GameScreen::updateStability(float dt) {
-    float decayRate = 0.5f * static_cast<float>(
+    float decayRate = 0.2f * static_cast<float>(
         std::count_if(countries.begin(), countries.end(),
             [](const std::unique_ptr<Country>& c){ return c->getOwner() != nullptr; }));
 

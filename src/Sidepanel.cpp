@@ -1,13 +1,14 @@
 #include "Sidepanel.hpp"
+#include <cstdlib>
 
 static constexpr float ICON_SIZE = 80.f;
 static constexpr float SLOT_W   = 250.f;
 static constexpr float POPUP_W  = 500.f;
 static constexpr float POPUP_H  = 320.f;
 
-ChestSlot::ChestSlot(const sf::Font& font, ResourceChest* c,
+ChestSlot::ChestSlot(const sf::Font& font, std::vector<std::unique_ptr<ResourceChest>> chestVariants,
                      const std::string& imagePath, sf::Vector2f pos)
-    : chest(c), nameText(font), timerText(font) {
+    : variants(std::move(chestVariants)), nameText(font), timerText(font) {
 
     if (texture.loadFromFile(imagePath))
         icon.setTexture(&texture);
@@ -19,7 +20,7 @@ ChestSlot::ChestSlot(const sf::Font& font, ResourceChest* c,
 
     nameText.setCharacterSize(13);
     nameText.setFillColor(sf::Color(200, 200, 200));
-    nameText.setString(chest->getTypeName());
+    nameText.setString(variants[0]->getTypeName());
     nameText.setPosition({pos.x + ICON_SIZE + 8.f, pos.y + 4.f});
 
     timerText.setCharacterSize(12);
@@ -79,11 +80,15 @@ void ChestSlot::resetTimer() {
 
 bool ChestSlot::isAvailable()               const { return available; }
 bool ChestSlot::containsIcon(sf::Vector2f p) const { return icon.getGlobalBounds().contains(p); }
-bool ChestSlot::checkAnswer(int idx)         const { return chest->checkAnswer(idx); }
-const ResourceChest& ChestSlot::getChest()  const { return *chest; }
+bool ChestSlot::checkAnswer(int idx)         const { return variants[currentVariant]->checkAnswer(idx); }
+const ResourceChest& ChestSlot::getChest()  const { return *variants[currentVariant]; }
 
 void ChestSlot::applyReward(float& gold, float& stability) const {
-    chest->applyReward(gold, stability);
+    variants[currentVariant]->applyReward(gold, stability);
+}
+
+void ChestSlot::pickRandomVariant() {
+    currentVariant = std::rand() % static_cast<int>(variants.size());
 }
 
 ChestPopup::ChestPopup(const sf::Font& font)
@@ -209,37 +214,76 @@ SidePanel::SidePanel(const sf::Font& font)
 
     chestSlots.reserve(2);
 
-    chestSlots.emplace_back(font,
-        new GoldChest("Care este capitala Romaniei?",
-            std::vector<std::string>{"Budapesta", "Sofia", "Bucuresti"}, 2, 500.f),
-        "goldchest.jpg",
-        sf::Vector2f{SLOT_X, CHESTS_Y});
+    std::vector<std::unique_ptr<ResourceChest>> goldVariants;
+    goldVariants.push_back(std::make_unique<GoldChest>(
+        "Care este capitala Romaniei?",
+        std::vector<std::string>{"Budapesta", "Sofia", "Bucuresti"}, 2, 500.f));
+    goldVariants.push_back(std::make_unique<GoldChest>(
+        "Ce moneda foloseste Franta?",
+        std::vector<std::string>{"Lira", "Euro", "Franc"}, 1, 600.f));
+    goldVariants.push_back(std::make_unique<GoldChest>(
+        "In ce an a aderat Romania la UE?",
+        std::vector<std::string>{"2004", "2007", "2010"}, 1, 700.f));
+    goldVariants.push_back(std::make_unique<GoldChest>(
+        "Ce fluviu trece prin Budapesta?",
+        std::vector<std::string>{"Dunarea", "Rin", "Sena"}, 0, 550.f));
+    goldVariants.push_back(std::make_unique<GoldChest>(
+        "Care este cel mai inalt munte din Grecia?",
+        std::vector<std::string>{"Olimp", "Parnas", "Athos"}, 0, 650.f));
 
-    chestSlots.emplace_back(font,
-        new StabilityChest("Care este cel mai mare oras din Germania?",
-            std::vector<std::string>{"München", "Hamburg", "Berlin"}, 2, 15.f),
-        "stabilitychest.jpg",
-        sf::Vector2f{SLOT_X, CHESTS_Y + SLOT_H});
+    chestSlots.emplace_back(font, std::move(goldVariants),
+        "goldchest.jpg", sf::Vector2f{SLOT_X, CHESTS_Y});
+
+    std::vector<std::unique_ptr<ResourceChest>> stabVariants;
+    stabVariants.push_back(std::make_unique<StabilityChest>(
+        "Care este cel mai mare oras din Germania?",
+        std::vector<std::string>{"München", "Hamburg", "Berlin"}, 2, 15.f));
+    stabVariants.push_back(std::make_unique<StabilityChest>(
+        "Cate stele are steagul UE?",
+        std::vector<std::string>{"12", "15", "27"}, 0, 12.f));
+    stabVariants.push_back(std::make_unique<StabilityChest>(
+        "Ce limba se vorbeste in Austria?",
+        std::vector<std::string>{"Austriaca", "Germana", "Elvetiana"}, 1, 18.f));
+    stabVariants.push_back(std::make_unique<StabilityChest>(
+        "Care tara are forma de cizma?",
+        std::vector<std::string>{"Spania", "Grecia", "Italia"}, 2, 14.f));
+    stabVariants.push_back(std::make_unique<StabilityChest>(
+        "Care este capitala Bulgariei?",
+        std::vector<std::string>{"Sofia", "Varna", "Plovdiv"}, 0, 16.f));
+
+    chestSlots.emplace_back(font, std::move(stabVariants),
+        "stabilitychest.jpg", sf::Vector2f{SLOT_X, CHESTS_Y + SLOT_H});
 }
 
 void SidePanel::rebuildAbilityButtons() {
     abilityButtons.clear();
     abilityTexts.clear();
     for (int i = 0; i < static_cast<int>(abilities.size()); i++) {
+        bool owned = (i < static_cast<int>(abilityOwned.size())) && abilityOwned[i];
+
         sf::RectangleShape btn;
         btn.setSize({PANEL_W - 20.f, 52.f});
         btn.setPosition({10.f, 116.f + i * 60.f});
-        btn.setFillColor(sf::Color(40, 55, 40));
         btn.setOutlineThickness(1.f);
-        btn.setOutlineColor(sf::Color(70, 130, 70));
+        if (owned) {
+            btn.setFillColor(sf::Color(45, 45, 60));
+            btn.setOutlineColor(sf::Color(90, 90, 120));
+        } else {
+            btn.setFillColor(sf::Color(40, 55, 40));
+            btn.setOutlineColor(sf::Color(70, 130, 70));
+        }
         abilityButtons.push_back(btn);
 
         sf::Text t(font);
         t.setCharacterSize(13);
-        t.setFillColor(sf::Color::White);
-        t.setString(abilities[i].getName() + "\nCost: "
-            + std::to_string(abilities[i].getGoldCost()) + " aur | +"
-            + std::to_string(abilities[i].getStabilityEffect()) + "% stab");
+        t.setFillColor(owned ? sf::Color(150, 150, 170) : sf::Color::White);
+        if (owned) {
+            t.setString(abilities[i].getName() + "\nOWNED");
+        } else {
+            t.setString(abilities[i].getName() + "\nCost: "
+                + std::to_string(abilities[i].getGoldCost()) + " aur | +"
+                + std::to_string(abilities[i].getStabilityEffect()) + "% stab");
+        }
         t.setPosition({14.f, 122.f + i * 60.f});
         abilityTexts.push_back(t);
     }
@@ -247,6 +291,7 @@ void SidePanel::rebuildAbilityButtons() {
 
 void SidePanel::setAbilities(const std::vector<Ability>& abs) {
     abilities = abs;
+    abilityOwned.assign(abs.size(), false);
     rebuildAbilityButtons();
 }
 
@@ -272,6 +317,7 @@ SidePanelAction SidePanel::handleClick(sf::Vector2f mousePos,
 
     for (int i = 0; i < static_cast<int>(chestSlots.size()); i++) {
         if (chestSlots[i].isAvailable() && chestSlots[i].containsIcon(mousePos)) {
+            chestSlots[i].pickRandomVariant();
             popup.show(i, chestSlots[i].getChest());
             return SidePanelAction::None;
         }
@@ -279,11 +325,12 @@ SidePanelAction SidePanel::handleClick(sf::Vector2f mousePos,
 
     for (int i = 0; i < static_cast<int>(abilityButtons.size()); i++) {
         if (abilityButtons[i].getGlobalBounds().contains(mousePos)) {
+            if (abilityOwned[i]) continue;
             if (gold >= static_cast<float>(abilities[i].getGoldCost())) {
                 gold -= static_cast<float>(abilities[i].getGoldCost());
                 stability += static_cast<float>(abilities[i].getStabilityEffect());
                 if (stability > 100.f) stability = 100.f;
-                abilities.erase(abilities.begin() + i);
+                abilityOwned[i] = true;
                 rebuildAbilityButtons();
                 return SidePanelAction::AbilityUsed;
             }

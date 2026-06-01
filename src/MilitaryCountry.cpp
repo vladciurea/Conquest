@@ -40,13 +40,13 @@ MilitaryCountry* MilitaryCountry::clone() const {
 int MilitaryCountry::produceIncome(float stabilityFactor) const {
     // Productia militara e moderata, afectata partial de stabilitate
     // (armata functioneaza si in haos, dar mai putin eficient)
-    float base = static_cast<float>(baseProduction());
+    float base             = static_cast<float>(baseProduction());
     float stabilityInfluence = 0.5f + 0.5f * stabilityFactor;
     return static_cast<int>(base * stabilityInfluence);
 }
 
 int MilitaryCountry::costToBuy() const {
-    static constexpr int costs[] = {3000, 20000, 120000, 800000, 4000000};
+    static constexpr int costs[] = {1500, 8000, 40000, 250000, 1200000};
     int idx = getTier() - 1;
     if (idx < 0) idx = 0;
     if (idx > 4) idx = 4;
@@ -66,8 +66,8 @@ std::string MilitaryCountry::getTypeName() const {
 void MilitaryCountry::displayInfo(std::ostream& os) const {
     os << "MilitaryCountry[" << getName() << "]"
        << " tier="          << getTier()
-       << " garrison="      << garrisonSize
-       << " defenseBonus="  << defenseBonus
+       << " garrison="      << getGarrisonSize()
+       << " defenseBonus="  << getDefenseBonus()
        << " stabilityBonus=" << stabilityBonus()
        << " income(stab=1.0)=" << produceIncome(1.0f)
        << " cost="          << costToBuy()
@@ -76,12 +76,3 @@ void MilitaryCountry::displayInfo(std::ostream& os) const {
 
 float MilitaryCountry::getDefenseBonus() const { return defenseBonus; }
 int   MilitaryCountry::getGarrisonSize() const { return garrisonSize; }
-
-void MilitaryCountry::reinforceGarrison() {
-    garrisonSize++;
-    defenseBonus += 0.1f;
-    std::cout << "[MilitaryCountry] " << getName()
-              << " garnizaona intarita la nivel " << garrisonSize
-              << " (defenseBonus=" << defenseBonus
-              << ", stabilityBonus=" << stabilityBonus() << ")\n";
-}

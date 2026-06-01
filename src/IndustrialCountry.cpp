@@ -44,7 +44,7 @@ int IndustrialCountry::produceIncome(float stabilityFactor) const {
 }
 
 int IndustrialCountry::costToBuy() const {
-    static constexpr int costs[] = {3000, 20000, 120000, 800000, 4000000};
+    static constexpr int costs[] = {1500, 8000, 40000, 250000, 1200000};
     int idx = getTier() - 1;
     if (idx < 0) idx = 0;
     if (idx > 4) idx = 4;
@@ -58,8 +58,8 @@ std::string IndustrialCountry::getTypeName() const {
 void IndustrialCountry::displayInfo(std::ostream& os) const {
     os << "IndustrialCountry[" << getName() << "]"
        << " tier=" << getTier()
-       << " factories=" << factoryLevel
-       << " pollution=" << pollutionRate
+       << " factories=" << getFactoryLevel()
+       << " pollution=" << getPollutionRate()
        << " income(stab=1.0)=" << produceIncome(1.0f)
        << " cost=" << costToBuy()
        << " owner=" << (getOwner() ? "Player" : "None");
@@ -69,13 +69,6 @@ float IndustrialCountry::getPollutionRate() const {
     return pollutionRate;
 }
 
-void IndustrialCountry::upgradeFactory() {
-    factoryLevel++;
-    pollutionRate += 0.1f;
-    std::cout << "[IndustrialCountry] " << getName()
-              << " a fost upgradată la factory level " << factoryLevel
-              << " (pollution=" << pollutionRate << ")\n";
-}
 
 int IndustrialCountry::getFactoryLevel() const {
     return factoryLevel;
