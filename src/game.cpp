@@ -62,7 +62,8 @@ void Game::processEvents() {
         }
         if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
             if (key->scancode == sf::Keyboard::Scancode::Escape) {
-                if (state == GameState::Playing) backToMenu();
+                if (state == GameState::Playing || state == GameState::Won
+                    || state == GameState::Dead) backToMenu();
                 else state = GameState::Quit;
                 return;
             }
@@ -75,6 +76,22 @@ void Game::processEvents() {
             } else if (action == MenuAction::StartGame) {
                 startGame();
             }
+        } else if (state == GameState::Won && winScreen) {
+            if (const auto* click = event->getIf<sf::Event::MouseButtonReleased>()) {
+                if (click->button == sf::Mouse::Button::Left) {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(
+                        {click->position.x, click->position.y});
+                    if (winScreen->clickedMenuButton(mousePos)) backToMenu();
+                }
+            }
+        } else if (state == GameState::Dead && deathScreen) {
+            if (const auto* click = event->getIf<sf::Event::MouseButtonReleased>()) {
+                if (click->button == sf::Mouse::Button::Left) {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(
+                        {click->position.x, click->position.y});
+                    if (deathScreen->clickedMenuButton(mousePos)) backToMenu();
+                }
+            }
         } else if (state == GameState::Playing && gameScreen) {
             const GameScreenResult result =
                 gameScreen->handleEvent(*event, window);
@@ -85,17 +102,30 @@ void Game::processEvents() {
     }
 }
 
-
 void Game::update(float dt) {
     if (state == GameState::Menu && menu) {
         const sf::Vector2f mousePos = window.mapPixelToCoords(
             sf::Mouse::getPosition(window));
         menu->update(mousePos);
+    } else if (state == GameState::Won && winScreen) {
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        winScreen->updateHover(mousePos);
+    } else if (state == GameState::Dead && deathScreen) {
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        deathScreen->updateHover(mousePos);
     } else if (state == GameState::Playing && gameScreen) {
         gameScreen->update(dt);
+        if (gameScreen->isGameWon()) {
+            std::cout << "[Game] Joc castigat!\n";
+            winScreen = std::make_unique<WinScreen>(font, window.getSize());
+            state = GameState::Won;
+        } else if (gameScreen->isGameOver()) {
+            std::cout << "[Game] Game over - imperiul a colapsat.\n";
+            deathScreen = std::make_unique<DeathScreen>(font, window.getSize());
+            state = GameState::Dead;
+        }
     }
 }
-
 
 void Game::render() {
     window.clear(sf::Color(20, 24, 32));
@@ -104,6 +134,11 @@ void Game::render() {
         menu->draw(window);
     } else if (state == GameState::Playing && gameScreen) {
         gameScreen->render(window);
+    } else if (state == GameState::Won && winScreen) {
+        winScreen->draw(window);
+    } else if (state == GameState::Dead && deathScreen) {
+        if (gameScreen) gameScreen->render(window);
+        deathScreen->draw(window);
     }
 
     window.display();

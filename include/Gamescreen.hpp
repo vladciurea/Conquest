@@ -32,6 +32,8 @@ class GameScreen {
     float gold = 0.f;
     float stability = 100.f;
     int unlockedUpTo = 0;
+    bool gameWon = false;
+    bool gameOver = false;
 
     const sf::Font& font;
 
@@ -62,4 +64,6 @@ public:
     void update(float dt);
     void render(sf::RenderWindow& window);
     void reset();
+    [[nodiscard]] bool isGameWon() const;
+    [[nodiscard]] bool isGameOver() const;
 };

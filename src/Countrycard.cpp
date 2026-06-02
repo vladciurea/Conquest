@@ -79,9 +79,11 @@ void CountryCard::updateVisuals(float stability) {
         background.setFillColor(sf::Color(40, 50, 40, 230));
         background.setOutlineColor(sf::Color(80, 160, 80));
 
+        float realIncome = static_cast<float>(country->produceIncome(stability / 100.f))
+                           * getProductionMultiplier();
         std::ostringstream oss;
-        oss << std::fixed << std::setprecision(2)
-            << country->produceIncome(stability / 100.f) << " aur/sec";
+        oss << std::fixed << std::setprecision(1)
+            << realIncome << " aur/sec (Nivel " << upgradeLevel << ")";
         incomeText.setString(oss.str());
 
         if (!isMaxLevel()) {
@@ -139,7 +141,7 @@ bool CountryCard::containsPoint(sf::Vector2f point) const {
 }
 
 int CountryCard::getUpgradeCost() const {
-    return country->costToBuy() / 2 * upgradeLevel;
+    return country->costToBuy() / 4 * upgradeLevel;
 }
 
 void CountryCard::upgrade() {

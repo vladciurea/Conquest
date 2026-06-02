@@ -90,6 +90,10 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Stabilitychest.cpp
         include/Sidepanel.hpp
         src/Sidepanel.cpp
+        include/Winscreen.hpp
+        src/Winscreen.cpp
+        include/Deathscreen.hpp
+        src/Deathscreen.cpp
 )
 # NOTE: When we add new .cpp source files, list them here.
 # target_sources(${MAIN_EXECUTABLE_NAME}

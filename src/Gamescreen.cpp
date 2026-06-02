@@ -85,6 +85,8 @@ GameScreen::GameScreen(const GameScreen& other)
       gold(other.gold),
       stability(other.stability),
       unlockedUpTo(other.unlockedUpTo),
+      gameWon(other.gameWon),
+      gameOver(other.gameOver),
       font(other.font),
       goldText(other.goldText),
       stabilityBar(other.stabilityBar),
@@ -101,6 +103,8 @@ GameScreen& GameScreen::operator=(GameScreen other) {
     std::swap(gold, other.gold);
     std::swap(stability, other.stability);
     std::swap(unlockedUpTo, other.unlockedUpTo);
+    std::swap(gameWon, other.gameWon);
+    std::swap(gameOver, other.gameOver);
     std::swap(countries, other.countries);
     std::swap(romaniaSnapshot, other.romaniaSnapshot);
     std::swap(goldText, other.goldText);
@@ -118,6 +122,9 @@ void GameScreen::reset() {
     GameScreen fresh(font);
     *this = fresh;
 }
+
+bool GameScreen::isGameWon() const { return gameWon; }
+bool GameScreen::isGameOver() const { return gameOver; }
 
 void GameScreen::tryBuyCountry(int index) {
     if (index <= 0 || index >= static_cast<int>(countries.size())) return;
@@ -178,7 +185,7 @@ void GameScreen::updateGold(float dt) {
             incomePerSec += base * cards[i].getProductionMultiplier();
         }
     }
-    gold += incomePerSec * 1.5f * dt;
+    gold += incomePerSec * 4.0f * dt;
 
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(1) << gold << " aur";
@@ -220,13 +227,16 @@ void GameScreen::update(float dt) {
         for (auto& card : cards)
             card.update(stability);
 
-        bool allOwned = std::all_of(countries.begin(), countries.end(),
-            [](const std::unique_ptr<Country>& c){ return c->getOwner() != nullptr; });
-        if (allOwned)
-            std::cout << "[GameScreen] Victorie!\n";
+        bool allMaxed = std::all_of(cards.begin(), cards.end(),
+            [](const CountryCard& c){ return c.isOwned() && c.isMaxLevel(); });
+        if (allMaxed) {
+            std::cout << "[GameScreen] Victorie! Toate tarile maxate.\n";
+            gameWon = true;
+        }
 
     } catch (const StabilityException& e) {
         std::cerr << e.what() << "\n";
+        gameOver = true;
     }
 }
 

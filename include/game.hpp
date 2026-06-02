@@ -2,6 +2,8 @@
 
 #include "menu.hpp"
 #include "Gamescreen.hpp"
+#include "Winscreen.hpp"
+#include "Deathscreen.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <memory>
@@ -10,6 +12,8 @@
 enum class GameState {
     Menu,
     Playing,
+    Won,
+    Dead,
     Quit
 };
 
@@ -21,6 +25,8 @@ class Game {
     GameState                  state;
     std::unique_ptr<Menu>       menu;
     std::unique_ptr<GameScreen> gameScreen;
+    std::unique_ptr<WinScreen>  winScreen;
+    std::unique_ptr<DeathScreen> deathScreen;
 
     static constexpr unsigned int WINDOW_WIDTH  = 1280;
     static constexpr unsigned int WINDOW_HEIGHT = 720;

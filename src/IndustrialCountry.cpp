@@ -44,7 +44,7 @@ int IndustrialCountry::produceIncome(float stabilityFactor) const {
 }
 
 int IndustrialCountry::costToBuy() const {
-    static constexpr int costs[] = {1500, 8000, 40000, 250000, 1200000};
+    static constexpr int costs[] = {700, 3000, 12000, 60000, 250000};
     int idx = getTier() - 1;
     if (idx < 0) idx = 0;
     if (idx > 4) idx = 4;
