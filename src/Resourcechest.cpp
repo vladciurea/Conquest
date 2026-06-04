@@ -1,7 +1,12 @@
 #include "Resourcechest.hpp"
 
+int ResourceChest::totalChestsOpened = 0;
+
 ResourceChest::ResourceChest(std::string q, const std::vector<std::string>& opts, int correct)
     : question(std::move(q)), options(opts), correctIndex(correct) {}
+
+void ResourceChest::registerOpened() { totalChestsOpened++; }
+int ResourceChest::getTotalChestsOpened() { return totalChestsOpened; }
 
 ResourceChest::ResourceChest(const ResourceChest& other)
     : question(other.question), options(other.options), correctIndex(other.correctIndex) {}

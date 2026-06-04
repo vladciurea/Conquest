@@ -9,6 +9,8 @@ class ResourceChest {
     std::vector<std::string> options;
     int correctIndex = 0;
 
+    static int totalChestsOpened;
+
 public:
     ResourceChest(std::string q, const std::vector<std::string>& opts, int correct);
 
@@ -24,6 +26,9 @@ public:
     [[nodiscard]] virtual std::string getRewardDescription() const = 0;
 
     [[nodiscard]] bool checkAnswer(int answerIndex) const;
+
+    static void registerOpened();
+    [[nodiscard]] static int getTotalChestsOpened();
 
     [[nodiscard]] const std::string& getQuestion() const;
     [[nodiscard]] const std::vector<std::string>& getOptions() const;

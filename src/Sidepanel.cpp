@@ -203,7 +203,8 @@ SidePanel::SidePanel(const sf::Font& font)
     chestsTitle.setCharacterSize(14);
     chestsTitle.setFillColor(sf::Color(140, 160, 200));
     chestsTitle.setStyle(sf::Text::Bold);
-    chestsTitle.setString("RESOURCE CHESTS");
+    chestsTitle.setString("RESOURCE CHESTS (" +
+        std::to_string(ResourceChest::getTotalChestsOpened()) + " deschise)");
     chestsTitle.setPosition({8.f, CHESTS_Y - 22.f});
 
     abilitiesTitle.setCharacterSize(14);
@@ -307,7 +308,12 @@ SidePanelAction SidePanel::handleClick(sf::Vector2f mousePos,
             int idx = popup.getSlotIdx();
             bool correct = chestSlots[idx].checkAnswer(ans);
             popup.markAnswer(ans, correct);
-            if (correct) chestSlots[idx].applyReward(gold, stability);
+            if (correct) {
+                chestSlots[idx].applyReward(gold, stability);
+                ResourceChest::registerOpened();
+                chestsTitle.setString("RESOURCE CHESTS (" +
+                    std::to_string(ResourceChest::getTotalChestsOpened()) + " deschise)");
+            }
             chestSlots[idx].resetTimer();
             popup.hide();
             return SidePanelAction::ChestAnswered;
