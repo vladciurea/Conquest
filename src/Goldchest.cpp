@@ -28,7 +28,7 @@ std::string GoldChest::getRewardDescription() const {
     return "+" + std::to_string(static_cast<int>(goldReward)) + " aur";
 }
 
-float GoldChest::getGoldReward() const { return goldReward; }
+// float GoldChest::getGoldReward() const { return goldReward; }
 
 void GoldChest::displayInfo(std::ostream& os) const {
     os << "GoldChest[\"" << getQuestion() << "\""

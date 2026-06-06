@@ -18,7 +18,7 @@ public:
 
     [[nodiscard]] std::string getTypeName() const override;
     [[nodiscard]] std::string getRewardDescription() const override;
-    [[nodiscard]] float getStabilityReward() const;
+    // [[nodiscard]] float getStabilityReward() const;
 
 protected:
     void displayInfo(std::ostream& os) const override;

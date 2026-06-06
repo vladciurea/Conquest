@@ -28,7 +28,7 @@ bool ResourceChest::checkAnswer(int answerIndex) const {
 
 const std::string& ResourceChest::getQuestion() const { return question; }
 const std::vector<std::string>& ResourceChest::getOptions() const { return options; }
-int ResourceChest::getCorrectIndex() const { return correctIndex; }
+// int ResourceChest::getCorrectIndex() const { return correctIndex; }
 
 std::ostream& operator<<(std::ostream& os, const ResourceChest& rc) {
     rc.displayInfo(os);

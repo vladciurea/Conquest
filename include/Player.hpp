@@ -20,20 +20,20 @@ public:
            float stab,
            const std::vector<Ability>& abil);
 
-    [[nodiscard]] int   getGold()       const;
-    [[nodiscard]] float getStability()  const;
-    [[nodiscard]] int   getOwnedCount() const;
+    // [[nodiscard]] int   getGold()       const;
+    // [[nodiscard]] float getStability()  const;
+    // [[nodiscard]] int   getOwnedCount() const;
 
     // Expune referinta la gold pentru Advisor (hire/salary)
-    int& goldRef();
+    // int& goldRef();
 
     [[nodiscard]] int calculateTotalIncome() const;
-    void collectIncome();
+    // void collectIncome();
 
-    bool buyCountry(Country& target);
-    void giveSpeech(int choice);
-    bool useAbility(size_t idx);
-    void listAbilities() const;
+    // bool buyCountry(Country& target);
+    // void giveSpeech(int choice);
+    // bool useAbility(size_t idx);
+    // void listAbilities() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Player& p);
 };

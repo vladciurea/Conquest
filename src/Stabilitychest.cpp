@@ -29,7 +29,7 @@ std::string StabilityChest::getRewardDescription() const {
     return "+" + std::to_string(static_cast<int>(stabilityReward)) + "% stabilitate";
 }
 
-float StabilityChest::getStabilityReward() const { return stabilityReward; }
+// float StabilityChest::getStabilityReward() const { return stabilityReward; }
 
 void StabilityChest::displayInfo(std::ostream& os) const {
     os << "StabilityChest[\"" << getQuestion() << "\""

@@ -25,14 +25,18 @@ public:
     [[nodiscard]] virtual std::string getTypeName() const = 0;
     [[nodiscard]] virtual std::string getRewardDescription() const = 0;
 
+    // cppcheck-suppress unusedFunction
     [[nodiscard]] bool checkAnswer(int answerIndex) const;
 
+    // cppcheck-suppress unusedFunction
     static void registerOpened();
+    // cppcheck-suppress unusedFunction
     [[nodiscard]] static int getTotalChestsOpened();
 
     [[nodiscard]] const std::string& getQuestion() const;
+    // cppcheck-suppress unusedFunction
     [[nodiscard]] const std::vector<std::string>& getOptions() const;
-    [[nodiscard]] int getCorrectIndex() const;
+    // [[nodiscard]] int getCorrectIndex() const;
 
     friend std::ostream& operator<<(std::ostream& os, const ResourceChest& rc);
 

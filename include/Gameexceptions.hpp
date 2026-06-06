@@ -33,8 +33,10 @@ public:
           goldAvailable(available),
           goldRequired(required) {}
 
-    [[nodiscard]] int getGoldAvailable() const noexcept { return goldAvailable; }
-    [[nodiscard]] int getGoldRequired()  const noexcept { return goldRequired; }
+    // [[nodiscard]] int getGoldAvailable() const noexcept { return goldAvailable; }
+    // [[nodiscard]] int getGoldRequired()  const noexcept { return goldRequired; }
+
+    // cppcheck-suppress unusedFunction
     [[nodiscard]] int getDeficit()       const noexcept { return goldRequired - goldAvailable; }
 };
 
@@ -49,6 +51,7 @@ public:
         : GameException("CountryException [" + countryName + "]: " + reason),
           countryName(countryName) {}
 
+    // cppcheck-suppress unusedFunction
     [[nodiscard]] const std::string& getCountryName() const noexcept {
         return countryName;
     }
@@ -64,7 +67,8 @@ public:
                         " (valoare=" + std::to_string(value) + ")"),
           stabilityValue(value) {}
 
-    [[nodiscard]] float getStabilityValue() const noexcept { return stabilityValue; }
+    // [[nodiscard]] float getStabilityValue() const noexcept { return stabilityValue; }
 
+    // cppcheck-suppress unusedFunction
     [[nodiscard]] bool isCollapse() const noexcept { return stabilityValue <= 0.0f; }
 };

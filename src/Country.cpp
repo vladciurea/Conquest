@@ -47,10 +47,10 @@ Player*            Country::getOwner()  const { return owner; }
 
 void Country::setOwner(Player* p) { owner = p; }
 
-bool Country::isNeighbor(const Country* c) const {
-    return std::ranges::any_of(neighbors,
-                               [c](const Country* n){ return n == c; });
-}
+// bool Country::isNeighbor(const Country* c) const {
+//     return std::ranges::any_of(neighbors,
+//                                [c](const Country* n){ return n == c; });
+// }
 
 // Productia de baza comuna - derivatele o folosesc ca punct de plecare
 int Country::baseProduction() const {

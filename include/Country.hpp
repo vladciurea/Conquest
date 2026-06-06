@@ -46,7 +46,7 @@ public:
     [[nodiscard]] virtual std::string getTypeName() const = 0;
 
     void setOwner(Player* p);
-    bool isNeighbor(const Country* c) const;
+    // bool isNeighbor(const Country* c) const;
 
     // Returneaza venitul de baza (fara modificatori specifici tipului)
     // Folosit de derivate ca punct de plecare in produceIncome()
