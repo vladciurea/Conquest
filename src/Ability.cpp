@@ -5,8 +5,11 @@ Ability::Ability(std::string n, std::string d, int cost, int stabEff, bool cons)
       goldCost(cost), stabilityEffect(stabEff), consumable(cons) {}
 
 const std::string& Ability::getName()            const { return name; }
+// cppcheck-suppress unusedFunction
 int                Ability::getGoldCost()        const { return goldCost; }
+// cppcheck-suppress unusedFunction
 int                Ability::getStabilityEffect() const { return stabilityEffect; }
+// cppcheck-suppress unusedFunction
 bool               Ability::isConsumable()       const { return consumable; }
 
 std::ostream& operator<<(std::ostream& os, const Ability& a) {

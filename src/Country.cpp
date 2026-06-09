@@ -48,6 +48,7 @@ const std::string& Country::getName()  const { return name; }
 int                Country::getTier()   const { return resourceTier; }
 bool               Country::isOwned()  const { return owned; }
 
+// cppcheck-suppress unusedFunction
 void Country::setOwned(bool value) { owned = value; }
 
 int Country::baseProduction() const {
