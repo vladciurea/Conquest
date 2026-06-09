@@ -7,12 +7,12 @@
 // Caracteristica speciala: pollutionRate - cat de mult scade stabilitatea.
 class IndustrialCountry : public Country {
     float pollutionRate;    // cat scade stabilitatea pe tick (ex: 0.5f)
-    int factoryLevel;     // nivelul fabricilor, amplifica productia
+    int   factoryLevel;     // nivelul fabricilor, amplifica productia
 
 public:
     IndustrialCountry(std::string n,
                       const std::vector<Country*>& neigh,
-                      Player* own,
+                      bool isOwnedInit,
                       int prodIndex,
                       int tier,
                       float pollution = 0.3f,
@@ -39,6 +39,5 @@ public:
     [[nodiscard]] float getPollutionRate() const;
 
     // Upgrade fabrici - creste productia dar si poluarea
-    void upgradeFactory();
     [[nodiscard]] int getFactoryLevel() const;
 };

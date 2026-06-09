@@ -2,12 +2,12 @@
 
 MilitaryCountry::MilitaryCountry(std::string n,
                                  const std::vector<Country*>& neigh,
-                                 Player* own,
+                                 bool isOwnedInit,
                                  int prodIndex,
                                  int tier,
                                  float defense,
                                  int garrison)
-    : Country(std::move(n), neigh, own, prodIndex, tier),
+    : Country(std::move(n), neigh, isOwnedInit, prodIndex, tier),
       defenseBonus(defense),
       garrisonSize(garrison) {}
 
@@ -71,7 +71,7 @@ void MilitaryCountry::displayInfo(std::ostream& os) const {
        << " stabilityBonus=" << stabilityBonus()
        << " income(stab=1.0)=" << produceIncome(1.0f)
        << " cost="          << costToBuy()
-       << " owner="         << (getOwner() ? "Player" : "None");
+       << " owned="         << (isOwned() ? "yes" : "no");
 }
 
 float MilitaryCountry::getDefenseBonus() const { return defenseBonus; }

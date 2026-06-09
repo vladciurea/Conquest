@@ -14,7 +14,7 @@ class MilitaryCountry : public Country {
 public:
     MilitaryCountry(std::string n,
                     const std::vector<Country*>& neigh,
-                    Player* own,
+                    bool isOwnedInit,
                     int prodIndex,
                     int tier,
                     float defense = 1.2f,
@@ -32,7 +32,7 @@ public:
     // Cea mai scumpa categorie - defenseBonus o face si mai scumpa
     [[nodiscard]] int costToBuy() const override;
 
-    // Specific temei: bonus de stabilitate pasiv oferit imperiului
+    // bonus de stabilitate pasiv oferit imperiului
     // (returneaza cat creste stabilitatea pe tick cat timp e detinuta)
     [[nodiscard]] float stabilityBonus() const;
 
@@ -44,5 +44,4 @@ public:
     [[nodiscard]] int   getGarrisonSize() const;
 
     // Mareste garnizaona - creste defenseBonus si stabilityBonus
-    void reinforceGarrison();
 };

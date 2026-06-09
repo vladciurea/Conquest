@@ -17,28 +17,23 @@ static const std::vector<std::string> FLAG_NAMES = {"ro","bg","hu","gr","de","fr
 void GameScreen::initCountries() {
     countries.clear();
     countries.push_back(std::make_unique<AgriculturalCountry>(
-        "Romania",  std::vector<Country*>{}, nullptr, 1, 1, 1.0f));
+        "Romania",  std::vector<Country*>{}, false, 1, 1, 1.0f));
     countries.push_back(std::make_unique<IndustrialCountry>(
-        "Bulgaria", std::vector<Country*>{}, nullptr, 2, 1, 0.15f, 1));
+        "Bulgaria", std::vector<Country*>{}, false, 2, 1, 0.15f, 1));
     countries.push_back(std::make_unique<MilitaryCountry>(
-        "Ungaria",  std::vector<Country*>{}, nullptr, 2, 2, 1.0f, 1));
+        "Ungaria",  std::vector<Country*>{}, false, 2, 2, 1.0f, 1));
     countries.push_back(std::make_unique<AgriculturalCountry>(
-        "Grecia",   std::vector<Country*>{}, nullptr, 3, 3, 1.5f));
+        "Grecia",   std::vector<Country*>{}, false, 3, 3, 1.5f));
     countries.push_back(std::make_unique<IndustrialCountry>(
-        "Germania", std::vector<Country*>{}, nullptr, 3, 4, 0.3f, 2));
+        "Germania", std::vector<Country*>{}, false, 3, 4, 0.3f, 2));
     countries.push_back(std::make_unique<AgriculturalCountry>(
-        "Franta",   std::vector<Country*>{}, nullptr, 3, 5, 3.5f));
+        "Franta",   std::vector<Country*>{}, false, 3, 5, 3.5f));
 
     romaniaSnapshot.reset(countries[0]->clone());
-    countries[0]->setOwner(&player);
+    countries[0]->setOwned(true);
 }
 
-void GameScreen::initPlayer() {
-    std::vector<Ability> abil = {
-        Ability("PeoplePleaser", "Incetineste scaderea stabilitatii", 80, +8, true),
-        Ability("MilitaryPower", "Reduce preturile de cumparare", 60, +3, true)
-    };
-    player = Player({}, 50, 100.f, abil);
+void GameScreen::initState() {
     gold = 50.f;
     stability = 100.f;
     unlockedUpTo = 0;
@@ -62,27 +57,25 @@ void GameScreen::initCards() {
 }
 
 GameScreen::GameScreen(const sf::Font& font)
-    : player({}, 200, 100.f, {}),
-      font(font),
+    : font(font),
       goldText(font),
       stabilityBar(font, {15.f, 50.f}, 250.f, 24.f),
       sidePanel(font) {
     goldText.setCharacterSize(28);
     goldText.setFillColor(sf::Color(220, 190, 80));
     goldText.setPosition({640.f, 16.f});
-    initPlayer();
+    initState();
     initCountries();
     initCards();
     std::vector<Ability> abil = {
-        Ability("PeoplePleaser", "Incetineste scaderea stabilitatii", 80, +8, true),
-        Ability("MilitaryPower", "Productie x1.5", 120, +0, true)
+        Ability("PeoplePleaser", "Incetineste scaderea stabilitatii", 80, +8),
+        Ability("MilitaryPower", "Productie x1.5", 120, +0)
     };
     sidePanel.setAbilities(abil);
 }
 
 GameScreen::GameScreen(const GameScreen& other)
-    : player(other.player),
-      gold(other.gold),
+    : gold(other.gold),
       stability(other.stability),
       unlockedUpTo(other.unlockedUpTo),
       gameWon(other.gameWon),
@@ -99,7 +92,6 @@ GameScreen::GameScreen(const GameScreen& other)
 }
 
 GameScreen& GameScreen::operator=(GameScreen other) {
-    std::swap(player, other.player);
     std::swap(gold, other.gold);
     std::swap(stability, other.stability);
     std::swap(unlockedUpTo, other.unlockedUpTo);
@@ -128,7 +120,7 @@ bool GameScreen::isGameOver() const { return gameOver; }
 
 void GameScreen::tryBuyCountry(int index) {
     if (index <= 0 || index >= static_cast<int>(countries.size())) return;
-    if (countries[index]->getOwner() != nullptr) return;
+    if (countries[index]->isOwned()) return;
     if (index > unlockedUpTo + 1) return;
 
     int cost = countries[index]->costToBuy();
@@ -136,7 +128,7 @@ void GameScreen::tryBuyCountry(int index) {
         throw ResourceException("cumparare " + countries[index]->getName(),
                                 static_cast<int>(gold), cost);
     gold -= static_cast<float>(cost);
-    countries[index]->setOwner(&player);
+    countries[index]->setOwned(true);
     unlockedUpTo = index;
     cards[index].unlock();
 }
@@ -179,7 +171,7 @@ GameScreenResult GameScreen::handleEvent(const sf::Event& event, sf::RenderWindo
 void GameScreen::updateGold(float dt) {
     float incomePerSec = 0.f;
     for (int i = 0; i < static_cast<int>(countries.size()); i++) {
-        if (countries[i]->getOwner() != nullptr) {
+        if (countries[i]->isOwned()) {
             float base = static_cast<float>(
                 countries[i]->produceIncome(stability / 100.f));
             incomePerSec += base * cards[i].getProductionMultiplier();
@@ -197,11 +189,11 @@ void GameScreen::updateGold(float dt) {
 void GameScreen::updateStability(float dt) {
     float decayRate = 0.2f * static_cast<float>(
         std::count_if(countries.begin(), countries.end(),
-            [](const std::unique_ptr<Country>& c){ return c->getOwner() != nullptr; }));
+            [](const std::unique_ptr<Country>& c){ return c->isOwned(); }));
 
     float bonusRate = 0.f;
     for (const auto& c : countries) {
-        if (c->getOwner() != nullptr) {
+        if (c->isOwned()) {
             if (const auto* mil = dynamic_cast<const MilitaryCountry*>(c.get()))
                 bonusRate += mil->stabilityBonus();
             if (const auto* ind = dynamic_cast<const IndustrialCountry*>(c.get()))

@@ -3,7 +3,6 @@
 #include "AgriculturalCountry.hpp"
 #include "IndustrialCountry.hpp"
 #include "MilitaryCountry.hpp"
-#include "Player.hpp"
 #include "Ability.hpp"
 #include "Goldchest.hpp"
 #include "Stabilitychest.hpp"
@@ -27,7 +26,6 @@ enum class GameScreenResult {
 class GameScreen {
     std::vector<std::unique_ptr<Country>> countries;
     std::vector<CountryCard> cards;
-    Player player;
 
     float gold = 0.f;
     float stability = 100.f;
@@ -45,7 +43,7 @@ class GameScreen {
     SidePanel sidePanel;
 
     void initCountries();
-    void initPlayer();
+    void initState();
     void initCards();
     void updateGold(float dt);
     void updateStability(float dt);

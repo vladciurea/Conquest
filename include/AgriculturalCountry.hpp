@@ -11,7 +11,7 @@ class AgriculturalCountry : public Country {
 public:
     AgriculturalCountry(std::string n,
                         const std::vector<Country*>& neigh,
-                        Player* own,
+                        bool isOwnedInit,
                         int prodIndex,
                         int tier,
                         float bonus = 1.0f);
@@ -30,6 +30,5 @@ public:
 
     void displayInfo(std::ostream& os) const override;
 
-    void setFertileBonus(float bonus);
     [[nodiscard]] float getFertileBonus() const;
 };

@@ -65,8 +65,6 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Ability.cpp
         include/Resourcechest.hpp
         src/Resourcechest.cpp
-        include/Player.hpp
-        src/Player.cpp
         include/AgriculturalCountry.hpp
         src/AgriculturalCountry.cpp
         include/IndustrialCountry.hpp

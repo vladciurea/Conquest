@@ -123,7 +123,7 @@ void CountryCard::setFlag(const sf::Texture* texture) {
     }
 }
 
-bool CountryCard::isOwned()    const { return country->getOwner() != nullptr; }
+bool CountryCard::isOwned()    const { return country->isOwned(); }
 bool CountryCard::isMaxLevel() const { return upgradeLevel >= MAX_LEVEL; }
 int  CountryCard::getLevel()   const { return upgradeLevel; }
 

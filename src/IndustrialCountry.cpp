@@ -2,12 +2,12 @@
 
 IndustrialCountry::IndustrialCountry(std::string n,
                                      const std::vector<Country*>& neigh,
-                                     Player* own,
+                                     bool isOwnedInit,
                                      int prodIndex,
                                      int tier,
                                      float pollution,
                                      int factories)
-    : Country(std::move(n), neigh, own, prodIndex, tier),
+    : Country(std::move(n), neigh, isOwnedInit, prodIndex, tier),
       pollutionRate(pollution), factoryLevel(factories) {}
 
 IndustrialCountry::IndustrialCountry(const IndustrialCountry& other)
@@ -62,7 +62,7 @@ void IndustrialCountry::displayInfo(std::ostream& os) const {
        << " pollution=" << getPollutionRate()
        << " income(stab=1.0)=" << produceIncome(1.0f)
        << " cost=" << costToBuy()
-       << " owner=" << (getOwner() ? "Player" : "None");
+       << " owned=" << (isOwned() ? "yes" : "no");
 }
 
 float IndustrialCountry::getPollutionRate() const {

@@ -2,11 +2,11 @@
 
 AgriculturalCountry::AgriculturalCountry(std::string n,
                                          const std::vector<Country*>& neigh,
-                                         Player* own,
+                                         bool isOwnedInit,
                                          int prodIndex,
                                          int tier,
                                          float bonus)
-    : Country(std::move(n), neigh, own, prodIndex, tier),
+    : Country(std::move(n), neigh, isOwnedInit, prodIndex, tier),
       fertileBonus(bonus) {}
 
 AgriculturalCountry::AgriculturalCountry(const AgriculturalCountry& other)
@@ -56,7 +56,7 @@ void AgriculturalCountry::displayInfo(std::ostream& os) const {
        << " fertileBonus=" << getFertileBonus()
        << " income=" << produceIncome(1.0f)
        << " cost=" << costToBuy()
-       << " owner=" << (getOwner() ? "Player" : "None");
+       << " owned=" << (isOwned() ? "yes" : "no");
 }
 
 
