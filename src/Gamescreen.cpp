@@ -26,8 +26,8 @@ void GameScreen::initCountries() {
         "Grecia",   std::vector<Country*>{}, false, 3, 3, 1.5f));
     countries.push_back(std::make_unique<IndustrialCountry>(
         "Germania", std::vector<Country*>{}, false, 3, 4, 0.3f, 2));
-    countries.push_back(std::make_unique<AgriculturalCountry>(
-        "Franta",   std::vector<Country*>{}, false, 3, 5, 3.5f));
+    countries.push_back(std::make_unique<TechCountry>(
+        "Franta",   std::vector<Country*>{}, false, 3, 5, 6.0f, 3));
 
     romaniaSnapshot.reset(countries[0]->clone());
     countries[0]->setOwned(true);

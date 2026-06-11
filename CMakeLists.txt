@@ -92,6 +92,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Winscreen.cpp
         include/Deathscreen.hpp
         src/Deathscreen.cpp
+        include/TechCountry.hpp
+        src/TechCountry.cpp
 )
 # NOTE: When we add new .cpp source files, list them here.
 # target_sources(${MAIN_EXECUTABLE_NAME}

@@ -3,6 +3,7 @@
 #include "AgriculturalCountry.hpp"
 #include "IndustrialCountry.hpp"
 #include "MilitaryCountry.hpp"
+#include "TechCountry.hpp"
 #include "Ability.hpp"
 #include "Goldchest.hpp"
 #include "Stabilitychest.hpp"
