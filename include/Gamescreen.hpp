@@ -40,12 +40,13 @@ class GameScreen {
 
     sf::Text goldText;
     StabilityBar stabilityBar;
-    StabilitySubject stabilitySubject;
-    StabilityAlert stabilityAlert;
 
     std::unique_ptr<Country> romaniaSnapshot;
     std::unordered_map<std::string, sf::Texture> flagTextures;
     SidePanel sidePanel;
+
+    StabilitySubject stabilitySubject;
+    StabilityAlert stabilityAlert;
 
     void initCountries();
     void initState();
