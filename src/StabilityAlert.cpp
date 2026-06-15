@@ -7,7 +7,7 @@ StabilityAlert::StabilityAlert(const sf::Font& font)
     alertText.setPosition({1080.f, 630.f});
 }
 
-void StabilityAlert::onStabilityChanged(float stability, StabilityLevel level) {
+void StabilityAlert::onStabilityChanged(float /*stability*/, StabilityLevel level) {
     switch (level) {
         case StabilityLevel::Critical:
             alertText.setString("STABILITATE\nCRITICA!");
