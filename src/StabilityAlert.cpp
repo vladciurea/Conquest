@@ -10,12 +10,12 @@ StabilityAlert::StabilityAlert(const sf::Font& font)
 void StabilityAlert::onStabilityChanged(float, StabilityLevel level) {
     switch (level) {
         case StabilityLevel::Critical:
-            alertText.setString("STABILITATE\nCRITICA!");
+            alertText.setString("GET YO\nSTABILITY UP\n NOT YO FUNNY UP");
             alertText.setFillColor(sf::Color(220, 40, 40));
             visible = true;
             break;
         case StabilityLevel::Warning:
-            alertText.setString("Stabilitate\nscazuta!");
+            alertText.setString("Stabilitatea\n e cam\ncooked gang!");
             alertText.setFillColor(sf::Color(220, 180, 40));
             visible = true;
             break;

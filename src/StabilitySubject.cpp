@@ -1,5 +1,4 @@
 #include "StabilitySubject.hpp"
-#include <algorithm>
 
 StabilityLevel StabilitySubject::levelFor(float stability) {
     if (stability < 15.f) return StabilityLevel::Critical;
@@ -7,15 +6,12 @@ StabilityLevel StabilitySubject::levelFor(float stability) {
     return StabilityLevel::Normal;
 }
 
+// cppcheck-suppress unusedFunction
 void StabilitySubject::addObserver(StabilityObserver* obs) {
     if (obs) observers.push_back(obs);
 }
 
-void StabilitySubject::removeObserver(StabilityObserver* obs) {
-    observers.erase(std::remove(observers.begin(), observers.end(), obs),
-                    observers.end());
-}
-
+// cppcheck-suppress unusedFunction
 void StabilitySubject::notifyStability(float stability) {
     StabilityLevel current = levelFor(stability);
     if (current == lastLevel) return;
