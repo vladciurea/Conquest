@@ -19,8 +19,7 @@ std::unique_ptr<ResourceChest> ChestFactory::createFromFields(
 }
 
 // cppcheck-suppress unusedFunction
-std::vector<std::unique_ptr<ResourceChest>>
-ChestFactory::loadByType(const std::string& path, const std::string& type) {
+std::vector<std::unique_ptr<ResourceChest>> ChestFactory::loadByType(const std::string& path, const std::string& type) {
     std::ifstream file(path);
     if (!file.is_open())
         throw ResourceException("deschidere fisier " + path, 0, 1);
