@@ -60,7 +60,9 @@ GameScreen::GameScreen(const sf::Font& font)
     : font(font),
       goldText(font),
       stabilityBar(font, {15.f, 50.f}, 250.f, 24.f),
-      sidePanel(font) {
+      sidePanel(font),
+      stabilityAlert(font) {
+    stabilitySubject.addObserver(&stabilityAlert);
     goldText.setCharacterSize(28);
     goldText.setFillColor(sf::Color(220, 190, 80));
     goldText.setPosition({640.f, 16.f});
@@ -83,7 +85,9 @@ GameScreen::GameScreen(const GameScreen& other)
       font(other.font),
       goldText(other.goldText),
       stabilityBar(other.stabilityBar),
-      sidePanel(other.font) {
+      sidePanel(other.font),
+      stabilityAlert(other.font) {
+    stabilitySubject.addObserver(&stabilityAlert);
     for (const auto& c : other.countries)
         countries.push_back(std::unique_ptr<Country>(c->clone()));
     if (other.romaniaSnapshot)
@@ -205,6 +209,7 @@ void GameScreen::updateStability(float dt) {
     stability -= (decayRate - bonusRate) * dt;
     if (stability > 100.f) stability = 100.f;
     stabilityBar.update(stability);
+    stabilitySubject.notifyStability(stability);
 
     if (stability <= 0.f) {
         stability = 0.f;
@@ -236,6 +241,7 @@ void GameScreen::render(sf::RenderWindow& window) {
     sidePanel.draw(window);
     stabilityBar.draw(window);
     window.draw(goldText);
+    stabilityAlert.draw(window);
     for (const auto& card : cards)
         card.draw(window);
     sidePanel.drawPopup(window);

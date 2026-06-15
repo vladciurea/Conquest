@@ -9,6 +9,8 @@
 #include "Stabilitychest.hpp"
 #include "Gameexceptions.hpp"
 #include "Stabilitybar.hpp"
+#include "StabilitySubject.hpp"
+#include "StabilityAlert.hpp"
 #include "Countrycard.hpp"
 #include "Sidepanel.hpp"
 
@@ -38,6 +40,8 @@ class GameScreen {
 
     sf::Text goldText;
     StabilityBar stabilityBar;
+    StabilitySubject stabilitySubject;
+    StabilityAlert stabilityAlert;
 
     std::unique_ptr<Country> romaniaSnapshot;
     std::unordered_map<std::string, sf::Texture> flagTextures;

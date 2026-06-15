@@ -1,4 +1,5 @@
 #include "Sidepanel.hpp"
+#include "ChestFactory.hpp"
 #include <cstdlib>
 
 static constexpr float ICON_SIZE = 80.f;
@@ -20,7 +21,7 @@ ChestSlot::ChestSlot(const sf::Font& font, std::vector<std::unique_ptr<ResourceC
 
     nameText.setCharacterSize(13);
     nameText.setFillColor(sf::Color(200, 200, 200));
-    nameText.setString(variants[0]->getTypeName());
+    nameText.setString(variants.empty() ? "Chest" : variants[0]->getTypeName());
     nameText.setPosition({pos.x + ICON_SIZE + 8.f, pos.y + 4.f});
 
     timerText.setCharacterSize(12);
@@ -215,43 +216,11 @@ SidePanel::SidePanel(const sf::Font& font)
 
     chestSlots.reserve(2);
 
-    std::vector<std::unique_ptr<ResourceChest>> goldVariants;
-    goldVariants.push_back(std::make_unique<GoldChest>(
-        "Care este capitala Romaniei?",
-        std::vector<std::string>{"Budapesta", "Sofia", "Bucuresti"}, 2, 500.f));
-    goldVariants.push_back(std::make_unique<GoldChest>(
-        "Ce moneda foloseste Franta?",
-        std::vector<std::string>{"Lira", "Euro", "Franc"}, 1, 600.f));
-    goldVariants.push_back(std::make_unique<GoldChest>(
-        "In ce an a aderat Romania la UE?",
-        std::vector<std::string>{"2004", "2007", "2010"}, 1, 700.f));
-    goldVariants.push_back(std::make_unique<GoldChest>(
-        "Ce fluviu trece prin Budapesta?",
-        std::vector<std::string>{"Dunarea", "Rin", "Sena"}, 0, 550.f));
-    goldVariants.push_back(std::make_unique<GoldChest>(
-        "Care este cel mai inalt munte din Grecia?",
-        std::vector<std::string>{"Olimp", "Parnas", "Athos"}, 0, 650.f));
-
+    auto goldVariants = ChestFactory::loadByType("questions.csv", "gold");
     chestSlots.emplace_back(font, std::move(goldVariants),
         "goldchest.jpg", sf::Vector2f{SLOT_X, CHESTS_Y});
 
-    std::vector<std::unique_ptr<ResourceChest>> stabVariants;
-    stabVariants.push_back(std::make_unique<StabilityChest>(
-        "Care este cel mai mare oras din Germania?",
-        std::vector<std::string>{"München", "Hamburg", "Berlin"}, 2, 15.f));
-    stabVariants.push_back(std::make_unique<StabilityChest>(
-        "Cate stele are steagul UE?",
-        std::vector<std::string>{"12", "15", "27"}, 0, 12.f));
-    stabVariants.push_back(std::make_unique<StabilityChest>(
-        "Ce limba se vorbeste in Austria?",
-        std::vector<std::string>{"Austriaca", "Germana", "Elvetiana"}, 1, 18.f));
-    stabVariants.push_back(std::make_unique<StabilityChest>(
-        "Care tara are forma de cizma?",
-        std::vector<std::string>{"Spania", "Grecia", "Italia"}, 2, 14.f));
-    stabVariants.push_back(std::make_unique<StabilityChest>(
-        "Care este capitala Bulgariei?",
-        std::vector<std::string>{"Sofia", "Varna", "Plovdiv"}, 0, 16.f));
-
+    auto stabVariants = ChestFactory::loadByType("questions.csv", "stability");
     chestSlots.emplace_back(font, std::move(stabVariants),
         "stabilitychest.jpg", sf::Vector2f{SLOT_X, CHESTS_Y + SLOT_H});
 }

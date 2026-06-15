@@ -94,6 +94,13 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Deathscreen.cpp
         include/TechCountry.hpp
         src/TechCountry.cpp
+        include/ChestFactory.hpp
+        src/ChestFactory.cpp
+        include/StabilityObserver.hpp
+        include/StabilitySubject.hpp
+        src/StabilitySubject.cpp
+        include/StabilityAlert.hpp
+        src/StabilityAlert.cpp
 )
 # NOTE: When we add new .cpp source files, list them here.
 # target_sources(${MAIN_EXECUTABLE_NAME}
@@ -148,6 +155,7 @@ copy_files(FILES
         assets/fr.png
         assets/goldchest.jpg
         assets/stabilitychest.jpg
+        assets/questions.csv
         DIRECTORY assets
         COPY_TO_DESTINATION
         TARGET_NAME ${MAIN_EXECUTABLE_NAME}
