@@ -16,21 +16,21 @@ static const std::vector<std::string> FLAG_NAMES = {"ro","bg","hu","gr","de","fr
 
 void GameScreen::initCountries() {
     countries.clear();
-    countries.push_back(std::make_unique<AgriculturalCountry>(
+    countries.add(std::make_unique<AgriculturalCountry>(
         "Romania",  std::vector<Country*>{}, false, 1, 1, 1.0f));
-    countries.push_back(std::make_unique<IndustrialCountry>(
+    countries.add(std::make_unique<IndustrialCountry>(
         "Bulgaria", std::vector<Country*>{}, false, 2, 1, 0.15f, 1));
-    countries.push_back(std::make_unique<MilitaryCountry>(
+    countries.add(std::make_unique<MilitaryCountry>(
         "Ungaria",  std::vector<Country*>{}, false, 2, 2, 1.0f, 1));
-    countries.push_back(std::make_unique<AgriculturalCountry>(
+    countries.add(std::make_unique<AgriculturalCountry>(
         "Grecia",   std::vector<Country*>{}, false, 3, 3, 1.5f));
-    countries.push_back(std::make_unique<IndustrialCountry>(
+    countries.add(std::make_unique<IndustrialCountry>(
         "Germania", std::vector<Country*>{}, false, 3, 4, 0.3f, 2));
-    countries.push_back(std::make_unique<TechCountry>(
+    countries.add(std::make_unique<TechCountry>(
         "Franta",   std::vector<Country*>{}, false, 3, 5, 6.0f, 3));
 
-    romaniaSnapshot.reset(countries[0]->clone());
-    countries[0]->setOwned(true);
+    romaniaSnapshot.reset(countries.at(0)->clone());
+    countries.at(0)->setOwned(true);
 }
 
 void GameScreen::initState() {
@@ -49,7 +49,7 @@ void GameScreen::initCards() {
             flagTextures[name] = std::move(tex);
         float x = (i < 3) ? CARDS_LEFT_X : CARDS_RIGHT_X;
         float y = CARDS_Y + (i % 3) * CARD_GAP;
-        cards.emplace_back(countries[i].get(), font, sf::Vector2f{x, y}, CARD_W);
+        cards.emplace_back(countries.at(i), font, sf::Vector2f{x, y}, CARD_W);
         auto it = flagTextures.find(name);
         if (it != flagTextures.end())
             cards.back().setFlag(&it->second);
@@ -59,6 +59,7 @@ void GameScreen::initCards() {
 GameScreen::GameScreen(const sf::Font& font)
     : font(font),
       goldText(font),
+      incomeRateText(font),
       stabilityBar(font, {15.f, 50.f}, 250.f, 24.f),
       sidePanel(font),
       stabilityAlert(font) {
@@ -66,6 +67,9 @@ GameScreen::GameScreen(const sf::Font& font)
     goldText.setCharacterSize(28);
     goldText.setFillColor(sf::Color(220, 190, 80));
     goldText.setPosition({640.f, 16.f});
+    incomeRateText.setCharacterSize(16);
+    incomeRateText.setFillColor(sf::Color(160, 200, 160));
+    incomeRateText.setPosition({640.f, 48.f});
     initState();
     initCountries();
     initCards();
@@ -84,12 +88,12 @@ GameScreen::GameScreen(const GameScreen& other)
       gameOver(other.gameOver),
       font(other.font),
       goldText(other.goldText),
+      incomeRateText(other.incomeRateText),
       stabilityBar(other.stabilityBar),
       sidePanel(other.font),
       stabilityAlert(other.font) {
     stabilitySubject.addObserver(&stabilityAlert);
-    for (const auto& c : other.countries)
-        countries.push_back(std::unique_ptr<Country>(c->clone()));
+    countries = other.countries.cloneAll();
     if (other.romaniaSnapshot)
         romaniaSnapshot.reset(other.romaniaSnapshot->clone());
     initCards();
@@ -104,6 +108,7 @@ GameScreen& GameScreen::operator=(GameScreen other) {
     std::swap(countries, other.countries);
     std::swap(romaniaSnapshot, other.romaniaSnapshot);
     std::swap(goldText, other.goldText);
+    std::swap(incomeRateText, other.incomeRateText);
     std::swap(stabilityBar, other.stabilityBar);
     std::swap(cards, other.cards);
     std::swap(flagTextures, other.flagTextures);
@@ -124,15 +129,15 @@ bool GameScreen::isGameOver() const { return gameOver; }
 
 void GameScreen::tryBuyCountry(int index) {
     if (index <= 0 || index >= static_cast<int>(countries.size())) return;
-    if (countries[index]->isOwned()) return;
+    if (countries.at(index)->isOwned()) return;
     if (index > unlockedUpTo + 1) return;
 
-    int cost = countries[index]->costToBuy();
+    int cost = countries.at(index)->costToBuy();
     if (gold < static_cast<float>(cost))
-        throw ResourceException("cumparare " + countries[index]->getName(),
+        throw ResourceException("cumparare " + countries.at(index)->getName(),
                                 static_cast<int>(gold), cost);
     gold -= static_cast<float>(cost);
-    countries[index]->setOwned(true);
+    countries.at(index)->setOwned(true);
     unlockedUpTo = index;
     cards[index].unlock();
 }
@@ -175,9 +180,9 @@ GameScreenResult GameScreen::handleEvent(const sf::Event& event, sf::RenderWindo
 void GameScreen::updateGold(float dt) {
     float incomePerSec = 0.f;
     for (int i = 0; i < static_cast<int>(countries.size()); i++) {
-        if (countries[i]->isOwned()) {
+        if (countries.at(i)->isOwned()) {
             float base = static_cast<float>(
-                countries[i]->produceIncome(stability / 100.f));
+                countries.at(i)->produceIncome(stability / 100.f));
             incomePerSec += base * cards[i].getProductionMultiplier();
         }
     }
@@ -188,22 +193,33 @@ void GameScreen::updateGold(float dt) {
     goldText.setString(oss.str());
     const sf::FloatRect b = goldText.getLocalBounds();
     goldText.setOrigin({b.size.x / 2.f, 0.f});
+
+    float currentStab = stability / 100.f;
+    float totalProd = sumOver<Country>(countries, [currentStab](const Country& c){
+        return c.isOwned() ? static_cast<float>(c.produceIncome(currentStab)) : 0.f;
+    });
+    std::ostringstream oss2;
+    oss2 << std::fixed << std::setprecision(0) << "+" << (totalProd * 4.0f) << " aur/sec";
+    incomeRateText.setString(oss2.str());
+    const sf::FloatRect b2 = incomeRateText.getLocalBounds();
+    incomeRateText.setOrigin({b2.size.x / 2.f, 0.f});
 }
 
 void GameScreen::updateStability(float dt) {
     float decayRate = 0.2f * static_cast<float>(
-        std::count_if(countries.begin(), countries.end(),
-            [](const std::unique_ptr<Country>& c){ return c->isOwned(); }));
+        countries.countIf([](const Country& c){ return c.isOwned(); }));
 
     float bonusRate = 0.f;
-    for (const auto& c : countries) {
-        if (c->isOwned()) {
-            if (const auto* mil = dynamic_cast<const MilitaryCountry*>(c.get()))
+    float pollutionExtra = 0.f;
+    countries.forEach([&](Country& c){
+        if (c.isOwned()) {
+            if (const auto* mil = dynamic_cast<const MilitaryCountry*>(&c))
                 bonusRate += mil->stabilityBonus();
-            if (const auto* ind = dynamic_cast<const IndustrialCountry*>(c.get()))
-                decayRate += ind->getPollutionRate();
+            if (const auto* ind = dynamic_cast<const IndustrialCountry*>(&c))
+                pollutionExtra += ind->getPollutionRate();
         }
-    }
+    });
+    decayRate += pollutionExtra;
 
     sidePanel.update(dt);
     stability -= (decayRate - bonusRate) * dt;
@@ -241,6 +257,7 @@ void GameScreen::render(sf::RenderWindow& window) {
     sidePanel.draw(window);
     stabilityBar.draw(window);
     window.draw(goldText);
+    window.draw(incomeRateText);
     stabilityAlert.draw(window);
     for (const auto& card : cards)
         card.draw(window);

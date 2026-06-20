@@ -4,6 +4,7 @@
 #include "IndustrialCountry.hpp"
 #include "MilitaryCountry.hpp"
 #include "TechCountry.hpp"
+#include "Repository.hpp"
 #include "Ability.hpp"
 #include "Goldchest.hpp"
 #include "Stabilitychest.hpp"
@@ -27,7 +28,7 @@ enum class GameScreenResult {
 };
 
 class GameScreen {
-    std::vector<std::unique_ptr<Country>> countries;
+    Repository<Country> countries;
     std::vector<CountryCard> cards;
 
     float gold = 0.f;
@@ -39,6 +40,7 @@ class GameScreen {
     const sf::Font& font;
 
     sf::Text goldText;
+    sf::Text incomeRateText;
     StabilityBar stabilityBar;
 
     std::unique_ptr<Country> romaniaSnapshot;

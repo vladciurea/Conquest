@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Repository.hpp"
 #include "Goldchest.hpp"
 #include "Stabilitychest.hpp"
 #include "Ability.hpp"
@@ -16,7 +17,7 @@ enum class SidePanelAction {
 };
 
 class ChestSlot {
-    std::vector<std::unique_ptr<ResourceChest>> variants;
+    Repository<ResourceChest> variants;
     int currentVariant = 0;
     sf::Texture texture;
     sf::RectangleShape icon;
@@ -30,7 +31,7 @@ class ChestSlot {
     static constexpr float COOLDOWN = 30.f;
 
 public:
-    ChestSlot(const sf::Font& font, std::vector<std::unique_ptr<ResourceChest>> chestVariants,
+    ChestSlot(const sf::Font& font, Repository<ResourceChest> chestVariants,
               const std::string& imagePath, sf::Vector2f pos);
 
     ChestSlot(const ChestSlot&) = delete;
@@ -49,6 +50,7 @@ public:
     void applyReward(float& gold, float& stability) const;
     [[nodiscard]] const ResourceChest& getChest() const;
     void pickRandomVariant();
+    [[nodiscard]] int getTotalOptionsCount() const;
 };
 
 class ChestPopup {

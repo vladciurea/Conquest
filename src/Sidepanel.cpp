@@ -1,5 +1,6 @@
 #include "Sidepanel.hpp"
 #include "ChestFactory.hpp"
+#include <iostream>
 #include <cstdlib>
 
 static constexpr float ICON_SIZE = 80.f;
@@ -7,7 +8,7 @@ static constexpr float SLOT_W   = 250.f;
 static constexpr float POPUP_W  = 500.f;
 static constexpr float POPUP_H  = 320.f;
 
-ChestSlot::ChestSlot(const sf::Font& font, std::vector<std::unique_ptr<ResourceChest>> chestVariants,
+ChestSlot::ChestSlot(const sf::Font& font, Repository<ResourceChest> chestVariants,
                      const std::string& imagePath, sf::Vector2f pos)
     : variants(std::move(chestVariants)), nameText(font), timerText(font) {
 
@@ -21,7 +22,7 @@ ChestSlot::ChestSlot(const sf::Font& font, std::vector<std::unique_ptr<ResourceC
 
     nameText.setCharacterSize(13);
     nameText.setFillColor(sf::Color(200, 200, 200));
-    nameText.setString(variants.empty() ? "Chest" : variants[0]->getTypeName());
+    nameText.setString(variants.empty() ? "Chest" : variants.at(0)->getTypeName());
     nameText.setPosition({pos.x + ICON_SIZE + 8.f, pos.y + 4.f});
 
     timerText.setCharacterSize(12);
@@ -81,15 +82,20 @@ void ChestSlot::resetTimer() {
 
 bool ChestSlot::isAvailable()               const { return available; }
 bool ChestSlot::containsIcon(sf::Vector2f p) const { return icon.getGlobalBounds().contains(p); }
-bool ChestSlot::checkAnswer(int idx)         const { return variants[currentVariant]->checkAnswer(idx); }
-const ResourceChest& ChestSlot::getChest()  const { return *variants[currentVariant]; }
+bool ChestSlot::checkAnswer(int idx)         const { return variants.at(currentVariant)->checkAnswer(idx); }
+const ResourceChest& ChestSlot::getChest()  const { return *variants.at(currentVariant); }
 
 void ChestSlot::applyReward(float& gold, float& stability) const {
-    variants[currentVariant]->applyReward(gold, stability);
+    variants.at(currentVariant)->applyReward(gold, stability);
 }
 
 void ChestSlot::pickRandomVariant() {
     currentVariant = std::rand() % static_cast<int>(variants.size());
+}
+
+int ChestSlot::getTotalOptionsCount() const {
+    return static_cast<int>(sumOver<ResourceChest>(variants,
+        [](const ResourceChest& c){ return static_cast<float>(c.getOptions().size()); }));
 }
 
 ChestPopup::ChestPopup(const sf::Font& font)
@@ -223,6 +229,12 @@ SidePanel::SidePanel(const sf::Font& font)
     auto stabVariants = ChestFactory::loadByType("questions.csv", "stability");
     chestSlots.emplace_back(font, std::move(stabVariants),
         "stabilitychest.jpg", sf::Vector2f{SLOT_X, CHESTS_Y + SLOT_H});
+
+    int totalOptions = 0;
+    for (const auto& slot : chestSlots)
+        totalOptions += slot.getTotalOptionsCount();
+    std::cout << "[SidePanel] Total optiuni de raspuns incarcate: "
+              << totalOptions << "\n";
 }
 
 void SidePanel::rebuildAbilityButtons() {

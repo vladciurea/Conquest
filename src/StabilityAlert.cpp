@@ -10,7 +10,7 @@ StabilityAlert::StabilityAlert(const sf::Font& font)
 void StabilityAlert::onStabilityChanged(float, StabilityLevel level) {
     switch (level) {
         case StabilityLevel::Critical:
-            alertText.setString("GET YO\nSTABILITY UP\n NOT YO FUNNY UP");
+            alertText.setString("TWIN\nCADE IMPERIUL\n ");
             alertText.setFillColor(sf::Color(220, 40, 40));
             visible = true;
             break;

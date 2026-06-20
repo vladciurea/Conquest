@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Resourcechest.hpp"
+#include "Repository.hpp"
 #include <memory>
 #include <vector>
 #include <string>
@@ -13,6 +14,6 @@ class ChestFactory {
 
 public:
     // Filtreaza chest-urile dupa tip ("gold" / "stability")
-    [[nodiscard]] static std::vector<std::unique_ptr<ResourceChest>>
+    [[nodiscard]] static Repository<ResourceChest>
         loadByType(const std::string& path, const std::string& type);
 };

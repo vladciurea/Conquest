@@ -101,6 +101,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/StabilitySubject.cpp
         include/StabilityAlert.hpp
         src/StabilityAlert.cpp
+        include/Repository.hpp
 )
 # NOTE: When we add new .cpp source files, list them here.
 # target_sources(${MAIN_EXECUTABLE_NAME}

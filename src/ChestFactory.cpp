@@ -19,12 +19,12 @@ std::unique_ptr<ResourceChest> ChestFactory::createFromFields(
 }
 
 // cppcheck-suppress unusedFunction
-std::vector<std::unique_ptr<ResourceChest>> ChestFactory::loadByType(const std::string& path, const std::string& type) {
+Repository<ResourceChest> ChestFactory::loadByType(const std::string& path, const std::string& type) {
     std::ifstream file(path);
     if (!file.is_open())
         throw ResourceException("deschidere fisier " + path, 0, 1);
 
-    std::vector<std::unique_ptr<ResourceChest>> result;
+    Repository<ResourceChest> result;
     std::string line;
 
     while (std::getline(file, line)) {
@@ -49,7 +49,7 @@ std::vector<std::unique_ptr<ResourceChest>> ChestFactory::loadByType(const std::
         int correct  = std::stoi(correctStr);
 
         auto chest = createFromFields(type, reward, question, options, correct);
-        if (chest) result.push_back(std::move(chest));
+        if (chest) result.add(std::move(chest));
     }
 
     return result;
