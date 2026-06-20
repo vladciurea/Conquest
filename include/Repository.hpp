@@ -31,6 +31,7 @@ public:
         return items[index].get();
     }
 
+    // cppcheck-suppress unusedFunction
     [[nodiscard]] Repository<T> cloneAll() const {
         Repository<T> copy;
         copy.reserve(items.size());
@@ -39,6 +40,7 @@ public:
         return copy;
     }
 
+    // cppcheck-suppress unusedFunction
     [[nodiscard]] int countIf(const std::function<bool(const T&)>& pred) const {
         int n = 0;
         for (const auto& item : items)
@@ -46,12 +48,7 @@ public:
         return n;
     }
 
-    [[nodiscard]] bool allOf(const std::function<bool(const T&)>& pred) const {
-        for (const auto& item : items)
-            if (!pred(*item)) return false;
-        return true;
-    }
-
+    // cppcheck-suppress unusedFunction
     void forEach(const std::function<void(T&)>& fn) {
         for (auto& item : items)
             fn(*item);
@@ -59,6 +56,7 @@ public:
 };
 
 template <typename T>
+// cppcheck-suppress unusedFunction
 [[nodiscard]] float sumOver(const Repository<T>& repo,
                             const std::function<float(const T&)>& extractor) {
     float total = 0.f;
