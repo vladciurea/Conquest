@@ -120,8 +120,12 @@ GameScreen::~GameScreen() {
 }
 
 void GameScreen::reset() {
-    GameScreen fresh(font);
-    *this = fresh;
+    initState();
+    initCountries();
+    initCards();
+    gameWon = false;
+    gameOver = false;
+    sidePanel.resetAbilities();
 }
 
 bool GameScreen::isGameWon() const { return gameWon; }

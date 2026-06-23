@@ -110,6 +110,7 @@ public:
     SidePanel& operator=(const SidePanel&) = delete;
 
     void setAbilities(const std::vector<Ability>& abs);
+    void resetAbilities();
     SidePanelAction handleClick(sf::Vector2f mousePos, float& gold, float& stability);
     void update(float dt);
     void draw(sf::RenderWindow& window) const;

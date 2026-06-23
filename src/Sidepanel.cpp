@@ -277,6 +277,11 @@ void SidePanel::setAbilities(const std::vector<Ability>& abs) {
     rebuildAbilityButtons();
 }
 
+void SidePanel::resetAbilities() {
+    abilityOwned.assign(abilities.size(), false);
+    rebuildAbilityButtons();
+}
+
 SidePanelAction SidePanel::handleClick(sf::Vector2f mousePos,
                                         float& gold, float& stability) {
     if (popup.isVisible()) {
